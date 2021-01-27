@@ -12,6 +12,7 @@
         "dist": "electron-builder"
     },
     "dependencies": {
+        "electron-builder": "^22.9.1",
         "electron-prompt": "^1.6.1",
         "electron-store": "^7.0.0"
     },
