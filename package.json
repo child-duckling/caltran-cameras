@@ -1,0 +1,28 @@
+{
+    "name": "ca-cams",
+    "productName": "Caltrans Cameras",
+    "description": "Lets you look at many different cameras at once",
+    "keywords": [],
+    "main": "./main.js",
+    "version": "0.1.0",
+    "author": "child-duckling",
+    "scripts": {
+        "start": "electron .",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder"
+    },
+    "dependencies": {
+        "electron-prompt": "^1.6.1",
+        "electron-store": "^7.0.0"
+    },
+    "devDependencies": {
+        "elctron-builder": "22.9.1",
+        "electron": "^11.0.0-beta.13"
+    },
+    "build": {
+        "appId": "cacams",
+        "mac": {
+            "category": "misc"
+        }
+    }
+}
