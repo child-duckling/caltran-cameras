@@ -9,11 +9,17 @@
     "scripts": {
         "start": "electron .",
         "pack": "electron-builder --dir",
-        "dist": "electron-builder"
+        "dist": "electron-builder",
+        "macOS": "electron-builder -m",
+        "Win": "electron-builder -w",
+        "Linux": "electron-builder -l",
+        "all": "electron-builder -mwl"
     },
     "dependencies": {
-        "electron-builder": "^22.9.1",
+        "electron-create-menu": "^3.0.1",
+        "electron-json-storage": "^4.3.0",
         "electron-prompt": "^1.6.1",
+        "electron-settings": "^4.0.2",
         "electron-store": "^7.0.0"
     },
     "devDependencies": {
