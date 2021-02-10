@@ -45,6 +45,8 @@ if (process.platform == 'win32') {
     winOnlyNotTransFrame = true
 }
 
+
+
 app.whenReady().then(() => {
     setupMenu()
     let win = new BrowserWindow({ width: 1100, height: 500, webPreferences: { webSecurity: false } })
@@ -58,13 +60,15 @@ app.whenReady().then(() => {
     win.setIcon('icon.png')
     fullyLoaded = true
     win.on('page-title-updated', () => {
-        win2 = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false } })
+        var win2 = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false } })
         if (win.webContents.getURL != indexPage) {
-            currentCameraTitle = win.getTitle()
+
             win2.loadURL(win.webContents.getURL())
+
             if (win2.webContents.getURL() == indexPage) { win2.close() }
+
             console.log(win.webContents.getURL())
-            win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
+
             win.loadFile('html/index.htm')
         }
         win.webContents.insertCSS(".tableCSS th{font-family:sans-serif;font-size:1.4em;text-align:left;padding-top:100px;padding-bottom:4px;#background-color:#9F9F9F;background-color:#767676;color:#fff;}")
