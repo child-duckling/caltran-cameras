@@ -22,12 +22,12 @@ const favorites = new Store();
 var favoritesName = []
 var indexPage = 'file://' + app.getAppPath() + '/html/index.htm'
 console.log(app.getAppPath())
-    //var textColor = 'white'
+    //var textColor = 'white'a
 
 
 var transparentCameraWindow = true
 var resetStoreAfterOpen = true
-
+var win2
 
 
 
@@ -60,7 +60,7 @@ app.whenReady().then(() => {
     win.setIcon('icon.png')
     fullyLoaded = true
     win.on('page-title-updated', () => {
-        var win2 = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false } })
+        var win2 = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false }, alwaysOnTop: true })
         if (win.webContents.getURL != indexPage) {
 
             win2.loadURL(win.webContents.getURL())
