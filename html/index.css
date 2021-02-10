@@ -27,8 +27,8 @@ th.sep {
     text-align: left;
     padding-top: 5px;
     padding-bottom: 4px;
-    #background-color: #9F9F9F;
-    background-color: #767676;
+    background-color: #f0f0f000;
+    background-color: #f0f0f000;
     color: #fff;
 }
 
@@ -49,10 +49,24 @@ th.sep {
         background: #333;
         color: white;
     }
+    a {
+        color: rgb(79, 190, 255);
+    }
+    a:visited {
+        color: rgb(105, 79, 255);
+    }
+    th {
+        background: rgb(0, 0, 0);
+        color: rgb(252, 252, 252);
+    }
 }
 
 @media (prefers-color-scheme: light) {
     body {
+        background: #ddd;
+        color: black;
+    }
+    th {
         background: #ddd;
         color: black;
     }

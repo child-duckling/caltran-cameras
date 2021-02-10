@@ -6,14 +6,13 @@
 // https://electronjs.org/docs/api/browser-view
 
 // In the main process.
-const { BrowserView, BrowserWindow, app, dialog } = require('electron')
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain } = require('electron')
 const Menu = require("electron-create-menu")
 const Store = require('electron-store');
 const prompt = require('electron-prompt');
 const settings = require('electron-settings')
 const storage = require('electron-json-storage');
 const { file } = require('electron-settings');
-
 storage.setDataPath(app.getPath('appData'))
 var fullyLoaded = false
 
@@ -21,9 +20,9 @@ var currentCameraURL
 var currentCameraTitle
 const favorites = new Store();
 var favoritesName = []
-var indexPage = ''
-
-//var textColor = 'white'
+var indexPage = 'file://' + app.getAppPath() + '/html/index.htm'
+console.log(app.getAppPath())
+    //var textColor = 'white'
 
 
 var transparentCameraWindow = true
@@ -33,13 +32,17 @@ var resetStoreAfterOpen = true
 
 
 
-
 //Table clsss for css is tableCSS
 
-
-
+var winOnlyNotTransFrame
+    // Parameter fix
 if (resetStoreAfterOpen === true) {
     favorites.clear()
+}
+if (process.platform == 'win32') {
+    winOnlyNotTransFrame = transparentCameraWindow
+} else {
+    winOnlyNotTransFrame = true
 }
 
 app.whenReady().then(() => {
@@ -50,36 +53,31 @@ app.whenReady().then(() => {
         win = null
     })
 
-    const view = new BrowserView({
-        webPreferences: {
-            nodeIntegration: true
-
-        }
-    })
-
-    win.setBrowserView(view)
-    win.loadFile('/html/index.htm')
+    win.loadFile('html/index.htm')
         //win.webContents.insertCSS(".tableCSS th{font-family:sans-serif;font-size:1.4em;text-align:left;padding-top:100px;padding-bottom:4px;#background-color:#9F9F9F;background-color:#767676;color:#fff;}")
     win.setIcon('icon.png')
     fullyLoaded = true
     win.on('page-title-updated', () => {
-        globalThis.win2 = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, webPreferences: { webSecurity: false } })
-        if (win.webContents.getURL() != file('/html/index.htm') || win.webContents.getURL() != 'about:blank') {
+        win2 = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false } })
+        if (win.webContents.getURL != indexPage) {
             currentCameraTitle = win.getTitle()
             win2.loadURL(win.webContents.getURL())
+            if (win2.webContents.getURL() == indexPage) { win2.close() }
+            console.log(win.webContents.getURL())
             win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
-            win.loadFile('/html/index.htm')
+            win.loadFile('html/index.htm')
         }
         win.webContents.insertCSS(".tableCSS th{font-family:sans-serif;font-size:1.4em;text-align:left;padding-top:100px;padding-bottom:4px;#background-color:#9F9F9F;background-color:#767676;color:#fff;}")
         win2.on('page-title-updated', () => {
-            win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
-            if (win2.webContents.getURL() = String()) { win2.close() } else {
-                updateFavorites()
-                    //currentCameraURL = win2.webContents.getURL()
-                    //console.log("\n Camera name: " + currentCameraTitle + "\n Camera URL: " + currentCameraURL)
-                win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
+            try {
+                if (win2.webContents.getURL() == indexPage) {
+                    win2.close()
+                } else {
+                    win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
+                }
+            } catch (err) {
+                console.log("If you see this, hi")
             }
-
         })
         win2.on('did-finish-load', () => {
             win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
@@ -137,3 +135,6 @@ function setupMenu() {
         return defaultMenu
     })
 }
+ipcMain.on('online-status-changed', (event, status) => {
+    console.log(status)
+})
