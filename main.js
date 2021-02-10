@@ -22,7 +22,7 @@ const favorites = new Store();
 var favoritesName = []
 var indexPage = 'file://' + app.getAppPath() + '/html/index.htm'
 console.log(app.getAppPath())
-    //var textColor = 'white'a
+    //var textColor = 'white'aa
 
 
 var transparentCameraWindow = true
