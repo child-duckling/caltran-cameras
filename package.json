@@ -13,7 +13,8 @@
         "macOS": "electron-builder -m",
         "Win": "electron-builder -w",
         "Linux": "electron-builder -l",
-        "all": "electron-builder -mwl"
+        "all": "electron-builder -mwl",
+        "mac-win": "electron-builder -mw"
     },
     "dependencies": {
         "discord-rpc": "^3.2.0",
