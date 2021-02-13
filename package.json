@@ -16,6 +16,7 @@
         "all": "electron-builder -mwl"
     },
     "dependencies": {
+        "discord-rpc": "^3.2.0",
         "electron-create-menu": "^3.0.1",
         "electron-json-storage": "^4.3.0",
         "electron-prompt": "^1.6.1",
@@ -23,8 +24,8 @@
         "electron-store": "^7.0.0"
     },
     "devDependencies": {
-        "elctron-builder": "22.9.1",
-        "electron": "^11.0.0-beta.13"
+        "electron": "^11.0.0-beta.13",
+        "electron-builder": "22.9.1"
     },
     "build": {
         "appId": "cacams",

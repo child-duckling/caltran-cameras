@@ -1,5 +1,7 @@
-body {
+html {
     font-family: sans-serif;
+    overflow-x: hidden;
+    scrollbar-width: none;
 }
 
 .tableCSS {
