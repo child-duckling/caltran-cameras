@@ -3,4 +3,4 @@
 
 
 
->Icon made by [Freepik](https://www.freepik.com) from [Flaticon](www.flaticon.com)
+> App icon made by [Freepik](https://www.freepik.com) from [Flaticon](www.flaticon.com)
