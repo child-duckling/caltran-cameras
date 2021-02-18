@@ -1,9 +1,7 @@
 // A BrowserView can be used to embed additional web content into a BrowserWindow.
 // It is like a child window, except that it is positioned relative to its owning
 // window. It is meant to be an alternative to the webview tag.
-//
-// For more info, see:
-// https://electronjs.org/docs/api/browser-view
+
 
 // In the main process.
 const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain } = require('electron')
