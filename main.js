@@ -64,7 +64,7 @@ app.whenReady().then(() => {
     win.setIcon('icon.png')
     fullyLoaded = true
     win.on('page-title-updated', () => {
-        globalThis.win2 = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false }, alwaysOnTop: true })
+        var win2 = camWin
         if (win.webContents.getURL != indexPage) {
 
             win2.loadURL(win.webContents.getURL())
