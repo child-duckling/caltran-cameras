@@ -4,7 +4,7 @@
     "description": "Lets you look at many different cameras at once",
     "keywords": [],
     "main": "./main.js",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "author": "child-duckling",
     "scripts": {
         "start": "electron .",

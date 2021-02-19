@@ -6,7 +6,7 @@
 // https://electronjs.org/docs/api/browser-view
 
 // In the main process.
-const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain } = require('electron')
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents } = require('electron')
 const Menu = require("electron-create-menu")
 const Store = require('electron-store');
 const prompt = require('electron-prompt');
@@ -34,7 +34,7 @@ console.log(app.getAppPath())
 var transparentCameraWindow = true
 var resetStoreAfterOpen = true
 var win2
-
+var camCount = 0
 
 //Table clsss for css is tableCSS
 
@@ -43,68 +43,56 @@ var winOnlyNotTransFrame
 if (resetStoreAfterOpen === true) {
     favorites.clear()
 }
-if (process.platform == 'win32') {
-    winOnlyNotTransFrame = transparentCameraWindow
+if (process.platform === 'win32') {
+    winOnlyNotTransFrame = !transparentCameraWindow
 } else {
     winOnlyNotTransFrame = true
 }
 
 
+class Camera {
+    constructor(url) {
+        this.url = url
+        this.window = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false }, alwaysOnTop: true })
+    }
+    load() {
+        camCount++
+        this.window.loadURL(this.url)
+
+        //this.window.reload()
+        //this.window.webContents.
+        this.window.on('close', () => {
+            camCount--
+        })
+        this.window.webContents.on('did-finish-load', () => {
+            discordRP(this.window.getTitle())
+            this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: white}")
+        })
+
+    }
+
+}
+
 
 app.whenReady().then(() => {
     setupMenu()
     let win = new BrowserWindow({ title: 'a list : Give me sugestions', width: 1100, height: 500, webPreferences: { webSecurity: false }, type: 'textured' })
-
     win.on('closed', () => {
         win = null
     })
-
     win.loadFile('html/index.htm')
         //win.webContents.insertCSS(".tableCSS th{font-family:sans-serif;font-size:1.4em;text-align:left;padding-top:100px;padding-bottom:4px;#background-color:#9F9F9F;background-color:#767676;color:#fff;}")
     win.setIcon('icon.png')
     fullyLoaded = true
-    win.on('page-title-updated', () => {
-        var win2 = camWin
-        if (win.webContents.getURL != indexPage) {
 
-            win2.loadURL(win.webContents.getURL())
-
-            if (win2.webContents.getURL() == indexPage) {
-                win2.close()
-                console.log('Camera Window URL was index \n Window Closed')
-            } else {
-                console.log('Camera Window URL was not index \n Window kept open')
-
-            }
-            discordRP(win.getTitle())
-            console.log(win.webContents.getURL())
-
-            win.loadFile('html/index.htm')
-        }
-        //win.webContents.insertCSS(".tableCSS th{font-family:sans-serif;font-size:1.4em;text-align:left;padding-top:100px;padding-bottom:4px;#background-color:#9F9F9F;background-color:#767676;color:#fff;}")
-        win2.on('page-title-updated', () => {
-            try {
-                if (win2.webContents.getURL() == indexPage) {
-                    win2.close()
-                        //discordRP('a list : Looking for cam')
-                } else {
-                    win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
-
-                }
-            } catch (err) {
-                console.log("If you see this, hi")
-            }
-        })
-        win2.on('did-finish-load', () => {
-            win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
-                //win2.webContents.insertCSS('#wx{position:absolute;top:270px;width:320px;color:white}')
-
-        })
-        win2.on('close', () => {
-            console.log(win2.getTitle() + " camera window cloased")
-
-        })
-
+    win.webContents.on('will-navigate', function(e, url) {
+        var camera = new Camera(url)
+        camera.load()
+        console.log(url)
+        win.loadFile('html/index.htm')
+    })
+    win.on('focus', () => {
+        discordRP(win.getTitle())
     })
 
 })
@@ -169,17 +157,24 @@ function discordRP(cam) {
     console.log(cam)
     var splitString = String(cam).split(" : ", 3)
     var small = splitString[1]
+
+
     rpc.setActivity({
         details: `Looking at ` + splitString[0],
-        state: '--',
+        state: camCount + ' cameras open',
         startTimestamp,
         largeImageKey: 'app-icon', // https://discord.com/developers/applications/<application_id>/rich-presence/assets
-        //largeImageText: 'Traffic is Nice',
+        largeImageText: 'Traffic is Nice',
         smallImageKey: 'red-car', // https://discord.com/developers/applications/<application_id>/rich-presence/assets
         smallImageText: small,
         instance: true,
 
-    });
+    })
+
+
+
+
+
 }
 
 rpc.login({ clientId }).catch(console.error)
