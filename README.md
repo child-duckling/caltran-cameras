@@ -1,5 +1,6 @@
 # caltran-cameras
  A widget-like app built off of Caltrans' camera webpage
+[![Build/release](https://github.com/child-duckling/cal-cams/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/child-duckling/cal-cams/actions/workflows/build.yml)
 
 
 
