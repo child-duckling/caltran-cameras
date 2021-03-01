@@ -1,6 +1,6 @@
 # caltran-cameras
 
-Electron App
+Web App
 
 
  A widget-like app built off of Caltrans' camera webpage
