@@ -109,9 +109,11 @@ class Camera {
         fs.writeFile(favoritesPage, completedFav)
     }
 }*/
+
+
+app.setAsDefaultProtocolClient('cal-cam')
+
 app.whenReady().then(() => {
-
-
     setupMenu()
     let win = new BrowserWindow({ title: 'a list : Give me sugestions', width: 1100, height: 500, webPreferences: { webSecurity: false }, type: 'textured', backgroundColor: '#000000' })
     win.loadURL(indexPage)
@@ -139,13 +141,26 @@ app.whenReady().then(() => {
             discordRP(win.getTitle())
         })
         //console.log(file())
-
+    win.on('close', () => {
+        rpc.clearActivity()
+    })
 
     /* win.minimize()
         var info = camera.getInfo()
         fav.add(info[0], info[1])
         app.relaunch()
     */
+})
+app.on('open-url', function(event, url) {
+    event.preventDefault()
+    deeplinkingUrl = url
+    console.log(deeplinkingUrl)
+    if (deeplinkingUrl == 'cal-cam://completed') {
+        console.log('Successful Discord Auth')
+        authCompleted = new BrowserWindow({ width: 170, height: 60 })
+        authCompleted.loadFile(app.getAppPath() + '/discordAuth.html')
+
+    }
 })
 
 function setFavorites() {
@@ -198,8 +213,9 @@ function setupMenu() {
                 label: 'Discord Auth',
                 click: async() => {
                     const { shell } = require('electron')
-                    await shell.openExternal('https://discord.com/api/oauth2/authorize?client_id=809941733604720651&redirect_uri=cal-cams%3A%2F%2Fcompleted&response_type=code&scope=identify%20rpc')
+                    await shell.openExternal('https://discord.com/api/oauth2/authorize?client_id=809941733604720651&redirect_uri=cal-cam%3A%2F%2Fcompleted&response_type=code&scope=identify%20rpc%20rpc.notifications.read%20rpc.voice.read%20rpc.voice.write%20rpc.activities.write%20email%20activities.read%20activities.write')
                 },
+                label: 'Hello ' + rpc.user + '!',
 
             }, ]
         })
@@ -245,7 +261,6 @@ rpc.login({ clientId }).catch(console.error)
 var dUser = rpc.user
     //var camParty = rpc.createLobby("PUBLIC", 4)
     //console.log(camParty)
-
 
 
 function randomColor() {
