@@ -2,7 +2,7 @@
 
 
 # caltran-cameras
-[![Build/release](https://github.com/child-duckling/cal-cams/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/child-duckling/cal-cams/actions/workflows/build.yml)
+[![Release](https://github.com/child-duckling/cal-cams/actions/workflows/Release.yml/badge.svg?event=release)](https://github.com/child-duckling/cal-cams/actions/workflows/Release.yml)[![Release](https://github.com/child-duckling/cal-cams/actions/workflows/Release.yml/badge.svg?event=push)](https://github.com/child-duckling/cal-cams/actions/workflows/Release.yml)[![Release](https://github.com/child-duckling/cal-cams/actions/workflows/Release.yml/badge.svg?event=issues)](https://github.com/child-duckling/cal-cams/actions/workflows/Release.yml)
 ## [Get Current Release Here](https://github.com/child-duckling/cal-cams/releases/)
 A window wrapper to make the live cameras widget-like built off of Caltrans' camera webpage
 
