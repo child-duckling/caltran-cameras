@@ -67,7 +67,7 @@ if (process.platform === 'win32') {
 class Camera {
     constructor(url) {
         this.url = url
-        this.window = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false, contextIsolation: true }, alwaysOnTop: true })
+        this.window = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false, contextIsolation: true }, alwaysOnTop: true, resizable: false })
         this.jsWin = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=310,height=425,left=100,top=100`
         return this.url, this.window, this.jsWin
 
@@ -76,7 +76,7 @@ class Camera {
         camCount++ //counter
         this.window.loadURL(this.url)
         this.window.on('close', () => {
-            console.log(this.window.getTitle() + " Closed")
+            console.log('\n' + this.window.getTitle() + " Closed")
             camCount--
             //discordRP()
 
@@ -119,7 +119,8 @@ class Camera {
 app.whenReady().then(() => {
     setupMenu()
     let win = new BrowserWindow({ title: 'a list : Give me sugestions', width: 1100, height: 500, webPreferences: { webSecurity: false }, type: 'textured', backgroundColor: '#000000' })
-    win.loadURL(indexPage)
+        //win.loadURL(indexPage)
+    win.loadURL('https://duckling.pw/cal-cams/web/app-link.htm')
         //win.webContents.insertCSS(".tableCSS th{font-family:sans-serif;font-size:1.4em;text-align:left;padding-top:100px;padding-bottom:4px;#background-color:#9F9F9F;background-color:#767676;color:#fff;}")
     win.setIcon('icon.png')
     fullyLoaded = true
