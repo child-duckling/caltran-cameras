@@ -1,11 +1,5 @@
-# caltran-cameras
+# /web
 
-Web App
+The webspace where the list is hosted.
 
-
- A widget-like app built off of Caltrans' camera webpage
-[![Build/release](https://github.com/child-duckling/cal-cams/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/child-duckling/cal-cams/actions/workflows/build.yml)
-
-
-
-> App icon made by [Freepik](https://www.freepik.com) from [Flaticon](www.flaticon.com)
+I want to add a non-app requiring page (index.htm) but I don't know that much to actually do it.
