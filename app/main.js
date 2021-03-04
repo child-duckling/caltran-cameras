@@ -6,7 +6,7 @@
 // https://electronjs.org/docs/api/browser-view
 
 // In the main process.
-const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell } = require('electron')
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem } = require('electron')
 const path = require('path')
 const Menu = require("electron-create-menu")
 const Store = require('electron-store');
@@ -20,8 +20,11 @@ var fullyLoaded = false
 const dl = require('electron-dl');
 var discord = require('discord-rpc');
 const { fstat } = require('fs');
+
+
 var clientId = '809941733604720651'
-var appAuth = 'https://discord.com/api/oauth2/authorize?client_id=809941733604720651&redirect_uri=cal-cams%3A%2F%2Fcompleted&response_type=code&scope=rpc'
+const scopes = ['rpc', 'rpc.api', 'messages.read'];
+var appAuth = 'https://discord.com/api/oauth2/authorize?client_id=809941733604720651&redirect_uri=https%3A%2F%2Fduckling.pw%2Fcal-cams%2Fweb%2FdiscordAuth.html&response_type=code&scope=identify%20email%20rpc%20rpc.notifications.read'
 discord.register(clientId)
 const rpc = new discord.Client({ transport: 'ipc' })
 const startTimestamp = new Date()
@@ -75,14 +78,14 @@ class Camera {
         this.window.on('close', () => {
             console.log(this.window.getTitle() + " Closed")
             camCount--
-            discordRP()
+            //discordRP()
 
         })
         console.log(this.url)
             //this.window.reload()
             //this.window.webContents.
         this.window.webContents.on('did-finish-load', () => {
-            discordRP(this.window.getTitle()) //Update Discord RP
+            //discordRP(this.window.getTitle()) //Update Discord RP
             this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + randomColor() + "}") //Set Text Color
         })
 
@@ -111,7 +114,7 @@ class Camera {
 }*/
 
 
-app.setAsDefaultProtocolClient('cal-cam')
+
 
 app.whenReady().then(() => {
     setupMenu()
@@ -138,30 +141,45 @@ app.whenReady().then(() => {
 
     })
     win.on('focus', () => {
-            discordRP(win.getTitle())
+            //discordRP(win.getTitle())
         })
         //console.log(file())
     win.on('close', () => {
-        rpc.clearActivity()
-    })
-
-    /* win.minimize()
-        var info = camera.getInfo()
-        fav.add(info[0], info[1])
-        app.relaunch()
-    */
+            //rpc.clearActivity()
+        })
+        /* win.minimize()
+            var info = camera.getInfo()
+            fav.add(info[0], info[1])
+            app.relaunch()
+        */
 })
+app.setAsDefaultProtocolClient('cal-cam')
 app.on('open-url', function(event, url) {
     event.preventDefault()
     deeplinkingUrl = url
     console.log(deeplinkingUrl)
-    if (deeplinkingUrl == 'cal-cam://completed') {
+    var link = String(deeplinkingUrl).split('cal-cam://')
+    console.log()
+    console.log(link[1])
+    var cam = new Camera(link[1])
+    cam.load()
+        /*if (deeplinkingUrl == 'cal-cam://completed') {
         console.log('Successful Discord Auth')
         authCompleted = new BrowserWindow({ width: 170, height: 60 })
         authCompleted.loadFile(app.getAppPath() + '/discordAuth.html')
-
+        var a = new MenuItem({ label: rpc.application.name })
+        console.log(rpc.application.icon)
+    } else {
+            //var cam = new Camera(link[1])
+            //cam.load()
     }
+*/
 })
+
+
+
+
+
 
 function setFavorites() {
     /*
@@ -215,7 +233,7 @@ function setupMenu() {
                     const { shell } = require('electron')
                     await shell.openExternal('https://discord.com/api/oauth2/authorize?client_id=809941733604720651&redirect_uri=cal-cam%3A%2F%2Fcompleted&response_type=code&scope=identify%20rpc%20rpc.notifications.read%20rpc.voice.read%20rpc.voice.write%20rpc.activities.write%20email%20activities.read%20activities.write')
                 },
-                label: 'Hello ' + rpc.user + '!',
+                //label: 'Hello ' + rpc.application.name + '!',
 
             }, ]
         })
@@ -256,20 +274,16 @@ function discordRP(cam) {
     }
 
 }
-
-rpc.login({ clientId }).catch(console.error)
+rpc.login({ clientId, scopes }).catch(console.error)
 var dUser = rpc.user
     //var camParty = rpc.createLobby("PUBLIC", 4)
     //console.log(camParty)
-
 
 function randomColor() {
     var a = "rgb( " + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")"
     console.log(a)
     return a
 }
-
-
 
 function updateList() {
     if (fullyLoaded == true) {
@@ -288,7 +302,6 @@ function updateList() {
         console.log('done updating!')
         loader.close()
     }
-
 
 
 
