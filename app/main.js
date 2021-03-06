@@ -64,10 +64,15 @@ if (process.platform === 'win32') {
 }
 
 
+
+
+
+
+//------------------
 class Camera {
     constructor(url) {
         this.url = url
-        this.window = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false, contextIsolation: true }, alwaysOnTop: true, resizable: false })
+        this.window = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false, contextIsolation: true }, alwaysOnTop: true, resizable: false, fullscreenable: false })
         this.jsWin = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=310,height=425,left=100,top=100`
         return this.url, this.window, this.jsWin
 
@@ -117,6 +122,15 @@ class Camera {
 
 
 app.whenReady().then(() => {
+    //Check and install before things go wrong
+    if (app.isPackaged == true && app.isInApplicationsFolder() == false && process.platform == 'darwin') {
+        app.moveToApplicationsFolder()
+        try {
+            shell.openExternal('https://github.com/child-duckling/cal-cams/wiki/Incorrect-Installation-(macOS)')
+        } catch (err) {
+            app.openExternal('https://github.com/child-duckling/cal-cams/wiki/Incorrect-Installation-(macOS)')
+        }
+    }
     setupMenu()
     let win = new BrowserWindow({ title: 'a list : Give me sugestions', width: 1100, height: 500, webPreferences: { webSecurity: false }, type: 'textured', backgroundColor: '#000000' })
         //win.loadURL(indexPage)
@@ -135,6 +149,7 @@ app.whenReady().then(() => {
              }
 
          })*/
+        /*
     win.webContents.on('will-navigate', function(e, url) {
         camera = new Camera(url)
         camera.load()
@@ -148,39 +163,38 @@ app.whenReady().then(() => {
     win.on('close', () => {
             //rpc.clearActivity()
         })
-        /* win.minimize()
-            var info = camera.getInfo()
-            fav.add(info[0], info[1])
-            app.relaunch()
         */
 })
+
 app.setAsDefaultProtocolClient('cal-cam')
 app.on('open-url', function(event, url) {
     event.preventDefault()
     deeplinkingUrl = url
     console.log(deeplinkingUrl)
     var link = String(deeplinkingUrl).split('cal-cam://')
-    console.log()
-    console.log(link[1])
-    var cam = new Camera(link[1])
-    cam.load()
-        /*if (deeplinkingUrl == 'cal-cam://completed') {
-        console.log('Successful Discord Auth')
-        authCompleted = new BrowserWindow({ width: 170, height: 60 })
-        authCompleted.loadFile(app.getAppPath() + '/discordAuth.html')
-        var a = new MenuItem({ label: rpc.application.name })
-        console.log(rpc.application.icon)
+    if (app.isReady() == true) {
+        if (deeplinkingUrl == 'cal-cam://completed') {
+            console.log('Successful Discord Auth')
+            authCompleted = new BrowserWindow({ width: 170, height: 60 })
+            authCompleted.loadFile(app.getAppPath() + '/discordAuth.html')
+            var a = new MenuItem({ label: rpc.application.name })
+            console.log(rpc.application.icon)
+        } else if (deeplinkingUrl == 'cal-cam://list') {
+            app.relaunch()
+            app.quit()
+        } else {
+            console.log()
+            console.log(link[1])
+            var cam = new Camera(link[1])
+            cam.load()
+        }
     } else {
-            //var cam = new Camera(link[1])
-            //cam.load()
+        //app.relaunch()
     }
-*/
+
+
+
 })
-
-
-
-
-
 
 function setFavorites() {
     /*
@@ -246,7 +260,35 @@ ipcMain.on('online-status-changed', (event, status) => {
     console.log(status)
 })
 
+function randomColor() {
+    var a = "rgb( " + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")"
+    console.log(a)
+    return a
+}
 
+function updateList() {
+    if (fullyLoaded == true) {
+        console.log('updating...')
+        loader = new BrowserWindow({ title: 'ignore me', width: 100, height: 100 })
+        dl.download(loader, 'https://cwwp2.dot.ca.gov/vm/streamlist.htm', { filename: 'index.htm', directory: dDir })
+        var file = fs.readFileSync(page, 'utf-8')
+        file.replace('<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Links to Caltrans Live Traffic Cameras"><title>Caltrans Streaming Video Locations</title><link rel="stylesheet" href="https://cwwp2.dot.ca.gov/documentation/cwwp2.css"></head><body><h1>Caltrans :: Live Traffic Cameras - Individual Links</h1><h2>Description</h2><p>The table below contains the links to the Caltrans Live Traffic Cameras. Routes that run in the south to north direction are listed in order starting from the southern-most camera location, and those that run in the west to east direction are listed in order starting from the western-most camera location.</p><h2>Conditions of Use</h2><p>Please read the <a href="https://dot.ca.gov/conditions-of-use">Conditions Of Use</a> before using these links.</p><p>Caltrans traffic camera video footage and still images are neither retained nor archived.<br></p>', '<!DOCTYPE HTML><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Links to Caltrans Live Traffic Cameras"><title>a list : Give me sugestions</title><link rel="stylesheet" href="index.css"></head><body></body>')
+            //Bottom Script removal
+        file.replace("<script>var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-12419100-3']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>", '')
+            //var unformattedFile = fs.readFile(indexPage)
+        fs.writeFileSync(page, file)
+            //Top + CSS
+
+
+        console.log('done updating!')
+        loader.close()
+    }
+
+
+
+
+
+}
 
 
 //-------------------------------Discord RP-------------------------------//
@@ -279,33 +321,3 @@ rpc.login({ clientId, scopes }).catch(console.error)
 var dUser = rpc.user
     //var camParty = rpc.createLobby("PUBLIC", 4)
     //console.log(camParty)
-
-function randomColor() {
-    var a = "rgb( " + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")"
-    console.log(a)
-    return a
-}
-
-function updateList() {
-    if (fullyLoaded == true) {
-        console.log('updating...')
-        loader = new BrowserWindow({ title: 'ignore me', width: 100, height: 100 })
-        dl.download(loader, 'https://cwwp2.dot.ca.gov/vm/streamlist.htm', { filename: 'index.htm', directory: dDir })
-        var file = fs.readFileSync(page, 'utf-8')
-        file.replace('<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Links to Caltrans Live Traffic Cameras"><title>Caltrans Streaming Video Locations</title><link rel="stylesheet" href="https://cwwp2.dot.ca.gov/documentation/cwwp2.css"></head><body><h1>Caltrans :: Live Traffic Cameras - Individual Links</h1><h2>Description</h2><p>The table below contains the links to the Caltrans Live Traffic Cameras. Routes that run in the south to north direction are listed in order starting from the southern-most camera location, and those that run in the west to east direction are listed in order starting from the western-most camera location.</p><h2>Conditions of Use</h2><p>Please read the <a href="https://dot.ca.gov/conditions-of-use">Conditions Of Use</a> before using these links.</p><p>Caltrans traffic camera video footage and still images are neither retained nor archived.<br></p>', '<!DOCTYPE HTML><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Links to Caltrans Live Traffic Cameras"><title>a list : Give me sugestions</title><link rel="stylesheet" href="index.css"></head><body></body>')
-            //Bottom Script removal
-        file.replace("<script>var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-12419100-3']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>", '')
-            //var unformattedFile = fs.readFile(indexPage)
-        fs.writeFileSync(page, file)
-            //Top + CSS
-
-
-        console.log('done updating!')
-        loader.close()
-    }
-
-
-
-
-
-}
