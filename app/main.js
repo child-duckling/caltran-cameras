@@ -6,7 +6,7 @@
 // https://electronjs.org/docs/api/browser-view
 
 // In the main process.
-const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem } = require('electron')
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem, screen } = require('electron')
 const path = require('path')
 const Menu = require("electron-create-menu")
 const Store = require('electron-store');
@@ -20,6 +20,7 @@ var fullyLoaded = false
 const dl = require('electron-dl');
 var discord = require('discord-rpc');
 const { fstat } = require('fs');
+const { electron } = require('process');
 
 
 var clientId = '809941733604720651'
@@ -45,7 +46,7 @@ console.log(app.getAppPath())
 var textColor = "orange"
     //var randomColor = "rgb( " + Math.random() * 100 + "," + Math.random() * 100 + "," + Math.random() * 100 + ")"
 
-var transparentCameraWindow = true
+var transparentCameraWindow = false
 var resetStoreAfterOpen = true
 var win2
 var camCount = 0
@@ -80,6 +81,9 @@ class Camera {
     load() {
         camCount++ //counter
         this.window.loadURL(this.url)
+        var m = screen.getCursorScreenPoint()
+        console.log(m)
+        this.window.setPosition(m.x + 175, m.y / 3, true)
         this.window.on('close', () => {
             console.log('\n' + this.window.getTitle() + " Closed")
             camCount--
@@ -131,39 +135,23 @@ app.whenReady().then(() => {
             app.openExternal('https://github.com/child-duckling/cal-cams/wiki/Incorrect-Installation-(macOS)')
         }
     }
+
+
+
     setupMenu()
-    let win = new BrowserWindow({ title: 'a list : Give me sugestions', width: 1100, height: 500, webPreferences: { webSecurity: false }, type: 'textured', backgroundColor: '#000000' })
-        //win.loadURL(indexPage)
-    win.loadURL('https://duckling.pw/cal-cams/web/app-link.htm')
-        //win.webContents.insertCSS(".tableCSS th{font-family:sans-serif;font-size:1.4em;text-align:left;padding-top:100px;padding-bottom:4px;#background-color:#9F9F9F;background-color:#767676;color:#fff;}")
-    win.setIcon('icon.png')
+
+    //let win = new BrowserWindow({ title: 'a list : Give me sugestions', width: 1100, height: 500, webPreferences: { webSecurity: false }, type: 'textured', backgroundColor: '#000000' })
+    //win.loadURL('https://duckling.pw/cal-cams/web/app-link.htm')
+
+    app.setActivationPolicy('accessory')
+    let wrapper = new BrowserWindow({ title: 'CalCams', width: 10, height: 10, webPreferences: { webSecurity: false }, type: 'textured', backgroundColor: '#000000' })
+    wrapper.loadURL('about:blank')
+
+    wrapper.blur()
+    wrapper.hide()
+    wrapper.setIcon('icon.png')
+    shell.openExternal('https://duckling.pw/cal-cams/web/app-link.htm')
     fullyLoaded = true
-        //var fav = new favPage()
-        //var camera = new Camera()
-        /* win.on('page-title-updated', (title) => {
-             if (title == "a list : Give me sugestions") {} else {
-                 win.webContents.executeJavaScript("window.alert('Hello')")
-                     //camera = new Camera(win.webContents.getURL())
-                     //camera.load()
-                 win.loadURL(indexPage)
-             }
-
-         })*/
-        /*
-    win.webContents.on('will-navigate', function(e, url) {
-        camera = new Camera(url)
-        camera.load()
-        win.loadURL(indexPage)
-
-    })
-    win.on('focus', () => {
-            //discordRP(win.getTitle())
-        })
-        //console.log(file())
-    win.on('close', () => {
-            //rpc.clearActivity()
-        })
-        */
 })
 
 app.setAsDefaultProtocolClient('cal-cam')
@@ -196,62 +184,33 @@ app.on('open-url', function(event, url) {
 
 })
 
-function setFavorites() {
-    /*
-        //var fav = Object.create()
-        storage.set(String(favorites.size), { 'name': prompt({ title: 'What Do You Want To Name It?', label: 'Name:', value: currentCameraTitle, inputAttrs: { type: 'text' }, type: 'input', alwaysOnTop: true }), 'url': currentCameraURL })
-        //.catch(dialog.showErrorBox("You haven't clicked on a camera yet or something's wrong"))
-        console.log("Saved new favorite \n Current List of Favorites:")
-        storage.keys(function(error, keys) {
-           if (error) throw error;
-
-           for (var key of keys) {
-                console.log(key);
-           }
-        });
-    */
-
-}
-
-function updateFavorites() {
-    console.log(storage.getAll())
-}
 
 function setupMenu() {
     Menu()
     Menu((defaultMenu, separator) => {
         defaultMenu.push({
-            role: 'help',
-            submenu: [{
-                label: 'Learn More',
-                click: async() => {
-                    const { shell } = require('electron')
-                    await shell.openExternal('https://github.com/child-duckling/cal-cams')
-                }
-            }]
-        }, {
-            label: "Favorites",
-            submenu: [{
-                    label: "Add to Favorites",
-                    click: setFavorites()
-                },
-                separator(),
-                { label: "~~~under construction~~~~" },
-                { label: 'FAVORITES', id: 'favs' },
-                { label: 'Update List', click: updateList() }
-            ]
-        }, {
-            label: 'Discord',
-            submenu: [{
-                label: 'Discord Auth',
-                click: async() => {
-                    const { shell } = require('electron')
-                    await shell.openExternal('https://discord.com/api/oauth2/authorize?client_id=809941733604720651&redirect_uri=cal-cam%3A%2F%2Fcompleted&response_type=code&scope=identify%20rpc%20rpc.notifications.read%20rpc.voice.read%20rpc.voice.write%20rpc.activities.write%20email%20activities.read%20activities.write')
-                },
-                //label: 'Hello ' + rpc.application.name + '!',
+                role: 'help',
+                submenu: [{
+                    label: 'Learn More',
+                    click: async() => {
+                        const { shell } = require('electron')
+                        await shell.openExternal('https://github.com/child-duckling/cal-cams')
+                    }
+                }]
+            }
+            /*,{
+                       label: 'Discord',
+                       submenu: [{
+                           label: 'Discord Auth',
+                           click: async() => {
+                               const { shell } = require('electron')
+                               await shell.openExternal('https://discord.com/api/oauth2/authorize?client_id=809941733604720651&redirect_uri=cal-cam%3A%2F%2Fcompleted&response_type=code&scope=identify%20rpc%20rpc.notifications.read%20rpc.voice.read%20rpc.voice.write%20rpc.activities.write%20email%20activities.read%20activities.write')
+                           },
+                           //label: 'Hello ' + rpc.application.name + '!',
 
-            }, ]
-        })
+                       }, ]
+                   }*/
+        )
 
         return defaultMenu
     })
