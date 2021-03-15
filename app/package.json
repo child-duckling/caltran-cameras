@@ -26,14 +26,16 @@
         "electron-store": "^7.0.0"
     },
     "devDependencies": {
-        "electron": "^11.0.0-beta.13",
+        "electron": "^11.3.0",
         "electron-builder": "22.9.1"
     },
     "build": {
         "appId": "cacams",
         "protocols": {
             "name": "cal-cam-link",
-            "schemes": ["cal-cam"]
+            "schemes": [
+                "cal-cam"
+            ]
         },
         "mac": {
             "category": "misc"
