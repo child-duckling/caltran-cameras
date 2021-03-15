@@ -1,5 +1,6 @@
 //  Electron stuff I might need
-const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem, screen } = require('electron')
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem } = require('electron')
+const screen = require('electron')
 const path = require('path')
 const Menu = require("electron-create-menu")
 const settings = require('electron-settings')
@@ -10,7 +11,7 @@ var fullyLoaded = false
 const { fstat } = require('fs')
 const { electron } = require('process')
 var source = 'https://github.com/child-duckling/caltran-cameras'
-var transparentCameraWindow = false
+var transparentCameraWindow = true
 
 // Windows needs the frame to be transparent too
 var winOnlyNotTransFrame
@@ -31,19 +32,18 @@ class Camera {
     }
     load() {
         this.window.loadURL(this.url)
-        var m = screen.getCursorScreenPoint()
-        console.log(m)
-        this.window.setPosition(m.x + 175, m.y / 3, true)
+            //var m = screen.getCursorScreenPoint()
+            //console.log(m)
+            //this.window.setPosition(m.x + 175, m.y / 3) ///////////////////////////////
         this.window.on('close', () => {
             console.log('\n' + this.window.getTitle() + " Closed")
-            camCount--
 
         })
         console.log(this.url)
             //this.window.reload()
             //this.window.webContents.
         this.window.webContents.on('did-finish-load', () => {
-            this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + randomColor() + "}") //Set Text Color
+            this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set Text Color
         })
 
     }
@@ -68,7 +68,7 @@ app.whenReady().then(() => {
     wrapper.hide()
     wrapper.setIcon('icon.png')
         //==Open List==
-    shell.openExternal('https://duckling.pw/cal-cams/web/app-link.htm')
+    shell.openExternal('https://duckling.pw/caltran-cameras/web/app-link.htm')
     fullyLoaded = true
 })
 
@@ -78,6 +78,7 @@ app.on('open-url', function(event, url) {
     deeplinkingUrl = url
     console.log(deeplinkingUrl)
     var link = String(deeplinkingUrl).split('cal-cam://')
+    console.log(link)
     if (app.isReady() == true) {
         if (deeplinkingUrl == 'cal-cam://completed') {
             console.log('Successful Discord Auth')
@@ -92,7 +93,7 @@ app.on('open-url', function(event, url) {
             console.log()
             console.log(link[1])
             var cam = new Camera(link[1])
-            cam.load()
+            cam.load() ////////////////////////
         }
     } else {
         //app.relaunch()
@@ -102,18 +103,21 @@ app.on('open-url', function(event, url) {
 
 })
 
+
+/*
+Some people like to open the app before they drag it into the Applications folder.
+Electron does not behave properly without it being in the Applications folder, so if they ignore the arrow in the .dmg,
+I just do it for them, but with the cost of them having to enter their password.
+*/
+
 function checkInstall(app) {
     if (app.isPackaged == true && app.isInApplicationsFolder() == false && process.platform == 'darwin') {
         app.moveToApplicationsFolder()
-        try {
-            shell.openExternal('https://github.com/child-duckling/cal-cams/wiki/Incorrect-Installation-(macOS)')
-        } catch (err) {
-            app.openExternal('https://github.com/child-duckling/cal-cams/wiki/Incorrect-Installation-(macOS)')
-        }
+        shell.openExternal(source + '/wiki/Incorrect-Installation-(macOS)')
     }
-
-
 }
+
+
 
 function setupMenu() {
     Menu()
@@ -136,7 +140,8 @@ ipcMain.on('online-status-changed', (event, status) => {
     console.log(status)
 })
 
-function randomColor() {
+function textColor() {
+    //TODO: add custom user provided text color via electron-settings
     var a = "rgb( " + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")"
     console.log(a)
     return a
