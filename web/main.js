@@ -52,9 +52,8 @@ function getSelected() {
 }
 document.addEventListener('load', () => {
     if (isElectron()) {
-        window.location('cal-cam://open')
-    } else {
-        window.location
+        window.close();
+        window.location('cal-cam://open');
     }
 })
 
