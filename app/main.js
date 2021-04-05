@@ -87,7 +87,7 @@ app.whenReady().then(() => {
     app.setActivationPolicy(activationPolicy)
 
     //Make the wrapper
-    let main = new BrowserWindow({ title: 'CalCams' }) // To keep the app open/running
+    let main = new BrowserWindow({ title: 'CalCams', width: 1000, height: 800 }) // To keep the app open/running
 
     //Hide the app even if activationPolicy is set to 'accessory' to be safe
     main.loadURL('https://duckling.pw/caltran-cameras/web/live.html')
