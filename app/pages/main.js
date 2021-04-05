@@ -50,13 +50,6 @@ function getSelected() {
 
 
 }
-document.addEventListener('load', () => {
-    if (isElectron()) {
-        window.close();
-        window.location('cal-cam://open');
-    }
-})
-
 
 function isElectron() {
     // Renderer process
