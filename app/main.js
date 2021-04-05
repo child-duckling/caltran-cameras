@@ -87,17 +87,19 @@ app.whenReady().then(() => {
     app.setActivationPolicy(activationPolicy)
 
     //Make the wrapper
-    let wrapper = new BrowserWindow({ title: 'CalCams' }) // To keep the app open/running
+    let main = new BrowserWindow({ title: 'CalCams' }) // To keep the app open/running
 
     //Hide the app even if activationPolicy is set to 'accessory' to be safe
-    wrapper.loadURL('about:blank')
-    wrapper.blur()
-    wrapper.hide()
-        // Set the icon
-    wrapper.setIcon('icon.png')
+    main.loadURL('https://duckling.pw/caltran-cameras/web/live.html')
+        //main.blur()
+        //main.hide()
+
+
+    // Set the icon
+    main.setIcon('icon.png')
 
     //Open the list
-    shell.openExternal(host + '/web/app-link.htm')
+    //shell.openExternal(host + '/web/live.html')
 })
 
 app.setAsDefaultProtocolClient('cal-cam')
@@ -105,7 +107,6 @@ app.on('open-url', function(event, url) {
 
     //Stop the navigation to about:blank
     event.preventDefault()
-
 
     //Seperate the URI and the parameter
     var deeplink = String(url).split('cal-cam://')
