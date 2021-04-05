@@ -1,17 +1,21 @@
 //  Electron stuff I might need
-const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem } = require('electron')
-const screen = require('electron')
-const path = require('path')
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem, screen } = require('electron')
 const Menu = require("electron-create-menu")
 const settings = require('electron-settings')
-const storage = require('electron-json-storage')
-const fs = require('fs')
-storage.setDataPath(app.getPath('appData'))
-var fullyLoaded = false
-const { fstat } = require('fs')
 const { electron } = require('process')
+
+
+//URLs
 var source = 'https://github.com/child-duckling/caltran-cameras'
+var host = 'https://duckling.pw/caltran-cameras'
+
+//TODO: Convert into settings
 var transparentCameraWindow = true
+var openWindowReletiveToMousePos = false //L57
+var customColor = 'rgb(255, 255, 255)' //L161
+var activationPolicy = 'regular' //L88
+var openListWhenAppStart = true //L97
+
 
 // Windows needs the frame to be transparent too
 var winOnlyNotTransFrame
@@ -25,26 +29,42 @@ if (process.platform === 'win32') {
 class Camera {
     constructor(url) {
         this.url = url
-        this.window = new BrowserWindow({ width: 310, height: 425, transparent: transparentCameraWindow, frame: winOnlyNotTransFrame, webPreferences: { webSecurity: false, contextIsolation: true }, alwaysOnTop: true, resizable: false, fullscreenable: false })
-        this.jsWin = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=310,height=425,left=100,top=100`
-        return this.url, this.window, this.jsWin
+        this.window = new BrowserWindow({
+                width: 310,
+                height: 425,
+                transparent: transparentCameraWindow,
+                frame: winOnlyNotTransFrame,
+                webPreferences: {
+                    webSecurity: false,
+                    contextIsolation: true
+                },
+                alwaysOnTop: true,
+                resizable: false,
+                fullscreenable: false
+            })
+            //return this.url, this.window
+
+        console.log(this.url)
+
+        this.window.loadURL(this.url)
+            /*
+            Window party trick where the window opens reletive to the mouse position
+
+            var m = screen.getCursorScreenPoint() 
+            console.log(m)
+            this.window.setPosition(m.x + 175, m.y / 3)
+            */
+        this.window.on('close', () => {
+            console.log(this.window.getTitle() + " closed")
+
+        })
+
+        this.window.webContents.on('did-finish-load', () => {
+            this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set text color on webpage
+        })
 
     }
     load() {
-        this.window.loadURL(this.url)
-            //var m = screen.getCursorScreenPoint()
-            //console.log(m)
-            //this.window.setPosition(m.x + 175, m.y / 3) ///////////////////////////////
-        this.window.on('close', () => {
-            console.log('\n' + this.window.getTitle() + " Closed")
-
-        })
-        console.log(this.url)
-            //this.window.reload()
-            //this.window.webContents.
-        this.window.webContents.on('did-finish-load', () => {
-            this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set Text Color
-        })
 
     }
     getInfo() {
@@ -57,44 +77,47 @@ class Camera {
 
 
 app.whenReady().then(() => {
-    //Check and install before things go wrong
+    //Check the install before things go wrong
     checkInstall(app)
+
+    //Self-explanitory
     setupMenu()
-    app.setActivationPolicy('accessory')
-    let wrapper = new BrowserWindow({ title: 'CalCams' })
-        //==Dissapear==
+
+    //Set the activationPolicy for macOS1
+    app.setActivationPolicy(activationPolicy)
+
+    //Make the wrapper
+    let wrapper = new BrowserWindow({ title: 'CalCams' }) // To keep the app open/running
+
+    //Hide the app even if activationPolicy is set to 'accessory' to be safe
     wrapper.loadURL('about:blank')
     wrapper.blur()
     wrapper.hide()
+        // Set the icon
     wrapper.setIcon('icon.png')
-        //==Open List==
-    shell.openExternal('https://duckling.pw/caltran-cameras/web/app-link.htm')
-    fullyLoaded = true
+
+    //Open the list
+    shell.openExternal(host + '/web/app-link.htm')
 })
 
 app.setAsDefaultProtocolClient('cal-cam')
 app.on('open-url', function(event, url) {
+
+    //Stop the navigation to about:blank
     event.preventDefault()
-    deeplinkingUrl = url
-    console.log(deeplinkingUrl)
-    var link = String(deeplinkingUrl).split('cal-cam://')
-    console.log(link)
+
+
+    //Seperate the URI and the parameter
+    var deeplink = String(url).split('cal-cam://')
+    console.log(deeplink)
+
+    /* 
+    If the app isn't open, the URI call will open it for them but the camera call will be lost, 
+    they will have to click link again to call the camera.
+    */
     if (app.isReady() == true) {
-        if (deeplinkingUrl == 'cal-cam://completed') {
-            console.log('Successful Discord Auth')
-            authCompleted = new BrowserWindow({ width: 170, height: 60 })
-            authCompleted.loadFile(app.getAppPath() + '/discordAuth.html')
-            var a = new MenuItem({ label: rpc.application.name })
-            console.log(rpc.application.icon)
-        } else if (deeplinkingUrl == 'cal-cam://list') {
-            app.relaunch()
-            app.quit()
-        } else {
-            console.log()
-            console.log(link[1])
-            var cam = new Camera(link[1])
-            cam.load() ////////////////////////
-        }
+        console.log(deeplink[1])
+        var camera = new Camera(deeplink[1])
     } else {
         //app.relaunch()
     }
@@ -105,7 +128,7 @@ app.on('open-url', function(event, url) {
 
 
 /*
-Some people like to open the app before they drag it into the Applications folder.
+Some people are sooo exited to open the app that they forget to drag it into the Applications folder.
 Electron does not behave properly without it being in the Applications folder, so if they ignore the arrow in the .dmg,
 I just do it for them, but with the cost of them having to enter their password.
 */
@@ -125,24 +148,23 @@ function setupMenu() {
         defaultMenu.push({
             role: 'help',
             submenu: [{
-                label: 'Learn More',
+                label: 'Wiki / Documentation',
                 click: async() => {
                     const { shell } = require('electron')
                     await shell.openExternal(source + '/wiki')
                 }
             }]
         })
-
         return defaultMenu
     })
 }
-ipcMain.on('online-status-changed', (event, status) => {
-    console.log(status)
-})
+
 
 function textColor() {
-    //TODO: add custom user provided text color via electron-settings
-    var a = "rgb( " + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")"
-    console.log(a)
-    return a
+    var color
+
+    color = "rgb( " + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")"
+
+    console.log(color)
+    return color
 }
