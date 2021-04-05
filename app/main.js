@@ -118,9 +118,14 @@ app.on('open-url', function(event, url) {
     */
     if (app.isReady() == true) {
         console.log(deeplink[1])
-        var camera = new Camera(deeplink[1])
+        if (deeplink != 'open') {
+            var camera = new Camera(deeplink[1])
+        } else {
+            app.relaunch()
+        }
+
     } else {
-        //app.relaunch()
+        app.relaunch()
     }
 
 
