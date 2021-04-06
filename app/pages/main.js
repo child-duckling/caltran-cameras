@@ -1,15 +1,23 @@
-document.addEventListener('mousedown', function(e) {
-    //var selectionActions = document.getElementsByClassName('selectionActions');
+document.addEventListener('click', function(e) {
+    (async() => {
+        await sleep(200);
+        crawlTable();
+    })()
+
+
+
+
+});
+
+function crawlTable() {
     var isSelected = document.getElementsByClassName('is-selected');
+    console.log('There is ' + isSelected.length + ' selected')
     if (isSelected.length != 0) {
         toggleActions('show');
     } else {
         toggleActions('hide');
     }
-    //console.log(document.links)
-
-
-});
+}
 
 function selectToast() {
     var snack = document.querySelector('.mdl-js-snackbar');
@@ -68,4 +76,8 @@ function isElectron() {
     }
 
     return false;
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms || DEF_DELAY));
 }

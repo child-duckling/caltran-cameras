@@ -1,23 +1,8 @@
-const { ipcRenderer, webContents, webFrame } = require('electron')
-const { get } = require('electron-settings')
-
 const { remote } = require("electron");
 const axios = require("axios");
 const authService = remote.require("./auth/auth-service");
 const authProcess = remote.require("./auth/auth-process");
 const webContents = remote.getCurrentWebContents();
-
-const updateOnlineStatus = () => { ipcRenderer.send('online-status-changed', navigator.onLine ? 'online' : 'offline') }
-
-window.addEventListener('online', updateOnlineStatus)
-window.addEventListener('offline', updateOnlineStatus)
-
-updateOnlineStatus()
-
-console.log(document.styleSheets())
-    //window.getSelect
-
-
 
 webContents.on("dom-ready", () => {
     const profile = authService.getProfile();

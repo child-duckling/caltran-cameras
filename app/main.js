@@ -5,6 +5,24 @@ const settings = require('electron-settings')
 const { electron } = require('process')
 
 
+
+//-------------AUTH------------------
+const { createAuthWindow } = require('./auth/auth-process');
+const createAppWindow = require('./auth/app-process');
+const authService = require('./auth/auth-service');
+
+async function showWindow() {
+    createAuthWindow();
+    //try {
+    //await authService.refreshTokens();
+    //return createAppWindow();
+    //} catch (err) {
+    //createAuthWindow();
+    //}
+}
+//-------------END AUTH--------------
+
+
 //URLs
 var source = 'https://github.com/child-duckling/caltran-cameras'
 var host = 'https://duckling.pw/caltran-cameras'
@@ -15,7 +33,7 @@ var openWindowReletiveToMousePos = false //L57
 var customColor = 'rgb(255, 255, 255)' //L161
 var activationPolicy = 'regular' //L88
 var openListWhenAppStart = true //L97
-
+var defaultMode = 2
 
 // Windows needs the frame to be transparent too
 var winOnlyNotTransFrame
@@ -24,6 +42,9 @@ if (process.platform === 'win32') {
 } else {
     winOnlyNotTransFrame = true
 }
+
+
+
 
 //==Widget Window==
 class Camera {
@@ -47,13 +68,14 @@ class Camera {
         console.log(this.url)
 
         this.window.loadURL(this.url)
-            /*
-            Window party trick where the window opens reletive to the mouse position
 
-            var m = screen.getCursorScreenPoint() 
-            console.log(m)
-            this.window.setPosition(m.x + 175, m.y / 3)
-            */
+        /*
+        Window party trick where the window opens reletive to the mouse position
+
+        var m = screen.getCursorScreenPoint() 
+        console.log(m)
+        this.window.setPosition(m.x + 175, m.y / 3)
+        */
         this.window.on('close', () => {
             console.log(this.window.getTitle() + " closed")
 
@@ -61,17 +83,21 @@ class Camera {
 
         this.window.webContents.on('did-finish-load', () => {
             this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set text color on webpage
+            this.window.webContents.executeJavaScript("document.getElementById('poster-MediaController-PlayPauseButton').click()", true)
+            this.window.webContents.on('did-stop-loading', () => {
+                this.window.webContents.executeJavaScript("document.getElementById('poster-MediaController-PlayPauseButton').click()", true)
+
+            })
+
         })
-
-    }
-    load() {
-
     }
     getInfo() {
         return this.url, this.window.getTitle()
     }
-
 }
+
+
+
 
 
 
@@ -80,25 +106,27 @@ app.whenReady().then(() => {
     //Check the install before things go wrong
     checkInstall(app)
 
+
+
     //Self-explanitory
     setupMenu()
 
     //Set the activationPolicy for macOS1
     app.setActivationPolicy(activationPolicy)
 
+    showWindow()
+
+
+
     //Make the wrapper
-    let main = new BrowserWindow({ title: 'CalCams', width: 1000, height: 800 }) // To keep the app open/running
-
-    //Hide the app even if activationPolicy is set to 'accessory' to be safe
-    main.loadURL('https://duckling.pw/caltran-cameras/web/live.html')
-        //main.blur()
-        //main.hide()
-
-
+    //let main = new BrowserWindow({ title: 'CalCams', width: 1000, height: 800 }) // To keep the app open/running
+    //main.loadFile('/pages/live.html')
     // Set the icon
-    main.setIcon('icon.png')
-
+    //main.setIcon('build/icon.png')
+    //Hide the app even if activationPolicy is set to 'accessory' to be safe
     //Open the list
+    //main.blur()
+    //main.hide()
     //shell.openExternal(host + '/web/live.html')
 })
 
@@ -118,14 +146,13 @@ app.on('open-url', function(event, url) {
     */
     if (app.isReady() == true) {
         console.log(deeplink[1])
-        if (deeplink != 'open') {
+        if (deeplink[1].length >= 10) {
             var camera = new Camera(deeplink[1])
         } else {
-            app.relaunch()
+            reopen(app)
         }
-
     } else {
-        app.relaunch()
+        reopen(app)
     }
 
 
@@ -173,4 +200,10 @@ function textColor() {
 
     console.log(color)
     return color
+}
+
+function reopen(app) {
+    app.relaunch()
+    app.exit()
+
 }

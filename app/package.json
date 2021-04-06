@@ -17,13 +17,16 @@
         "mac-win": "electron-builder -mw"
     },
     "dependencies": {
+        "axios": "^0.21.1",
         "discord-rpc": "^3.2.0",
         "electron-create-menu": "^3.0.1",
         "electron-dl": "^3.1.0",
         "electron-json-storage": "^4.3.0",
         "electron-prompt": "^1.6.1",
         "electron-settings": "^4.0.2",
-        "electron-store": "^7.0.0"
+        "electron-store": "^7.0.0",
+        "jwt-decode": "^3.1.2",
+        "keytar": "^7.6.0"
     },
     "devDependencies": {
         "electron": "^11.3.0",

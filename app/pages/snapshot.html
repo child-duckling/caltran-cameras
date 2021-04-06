@@ -1,0 +1,115 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GFG User Details</title>
+
+    <!-- INCLUDING JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.5.1.js">
+    </script>
+
+    <!-- CSS FOR STYLING THE PAGE -->
+    <style>
+        table {
+            margin: 0 auto;
+            font-size: large;
+            border: 1px solid black;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #006600;
+            font-size: xx-large;
+            font-family: 'Gill Sans', 'Gill Sans MT', ' Calibri', 'Trebuchet MS', 'sans-serif';
+        }
+        
+        td {
+            background-color: #E4F5D4;
+            border: 1px solid black;
+        }
+        
+        th,
+        td {
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        td {
+            font-weight: lighter;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <h1>...</h1>
+
+        <!-- TABLE CONSTRUCTION-->
+        <table id='table'></table>
+
+        <script>
+            $(document).ready(function() {
+                var data = '';
+                var url = 'https://cors-anywhere.herokuapp.com/https://cwwp2.dot.ca.gov/data/d1/cctv/cctvStatusD01.json';
+                $.ajax({
+                    url: url,
+                    crossOrigin: true,
+                    type: 'GET',
+                    accept: 'application/json',
+                    data: data,
+                    dataType: 'json'
+                }).done(function(data) {
+                    console.log(data)
+                    console.log(data.data.length)
+                    data = data.data
+                        //var data = JSON.parse()
+                        // get the table to add rows to
+                    var table = document.getElementById('table');
+                    // cycle through the array for each of the presidents
+                    for (var i = 0; i < data.length; ++i) {
+                        // keep a reference to an individual president object
+                        //var data = data[i].cctv;
+                        console.log(data)
+                            // create a row element to append cells to
+                        var row = document.createElement('tr');
+
+                        // properties of the array elements
+                        //var properties = [data[i].cctv.location.locationName, data[i].cctv.location.nearbyPlace, data[i].cctv.location.imageData.static.currentImageURL];
+
+                        // append each one of them to the row in question, in order
+
+                        // create new data cell for names
+                        var cell = document.createElement('td');
+
+                        // set name of property using bracket notation (properties[j] is a string,
+                        // which can be used to access properties of president)
+                        cell.innerHTML = data[i].cctv.location.locationName;
+
+                        // add to end of the row
+                        row.appendChild(cell);
+
+                        var cell = document.createElement('td').;
+
+                        // set name of property using bracket notation (properties[j] is a string,
+                        // which can be used to access properties of president)
+                        cell.innerHTML = data[i].cctv.location.county;
+
+                        // add to end of the row
+                        row.appendChild(cell);
+
+
+                        // add new row to table
+                        table.appendChild(row);
+                    }
+                });
+
+
+                // FETCHING DATA FROM JSON FILE
+            });
+        </script>
+    </section>
+</body>
+
+</html>
