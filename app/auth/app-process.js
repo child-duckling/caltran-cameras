@@ -5,7 +5,7 @@ function createAppWindow() {
         width: 1000,
         height: 600,
         webPreferences: {
-            nodeIntegration: true,
+            nodeIntegration: false,
             enableRemoteModule: true,
         },
     });

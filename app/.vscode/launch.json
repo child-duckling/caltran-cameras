@@ -9,6 +9,13 @@
             "request": "launch",
             "name": "Launch Electron against the workspace",
             "appDir": "${workspaceFolder}"
+        },
+        {
+            "name": "Launch index.html",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "file": "${workspaceFolder}/pages/snap.html"
         }
     ]
 }

@@ -131,6 +131,13 @@ app.whenReady().then(() => {
 })
 
 app.setAsDefaultProtocolClient('cal-cam')
+
+// On Windows, clicking the URI opens the list again without opening the window, this prevents that.
+const lock = app.requestSingleInstanceLock()
+if (!lock) {
+    app.quit()
+}
+
 app.on('open-url', function(event, url) {
 
     //Stop the navigation to about:blank
