@@ -114,20 +114,28 @@ app.whenReady().then(() => {
     //Set the activationPolicy for macOS1
     app.setActivationPolicy(activationPolicy)
 
-    showWindow()
+    //showWindow()
 
 
 
     //Make the wrapper
-    //let main = new BrowserWindow({ title: 'CalCams', width: 1000, height: 800 }) // To keep the app open/running
-    //main.loadFile('/pages/live.html')
+    let main = new BrowserWindow({
+        width: 1000,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+        },
+    });
+
     // Set the icon
-    //main.setIcon('build/icon.png')
-    //Hide the app even if activationPolicy is set to 'accessory' to be safe
-    //Open the list
-    //main.blur()
-    //main.hide()
-    //shell.openExternal(host + '/web/live.html')
+    main.setIcon('build/icon.png')
+    main.loadFile('pages/live.html')
+        //Hide the app even if activationPolicy is set to 'accessory' to be safe
+        //Open the list
+        //main.blur()
+        //main.hide()
+        //shell.openExternal(host + '/web/live.html')
 })
 
 app.setAsDefaultProtocolClient('cal-cam')

@@ -89,10 +89,3 @@ for (var loop = 0; loop < url.length; loop++) {
     //w3.sortHTML('#table', '.item')
 
 }
-/*
-document.addEventListener('load', () => {
-    
-
-
-})
-*/
