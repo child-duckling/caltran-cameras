@@ -153,6 +153,7 @@ app.on('open-url', function(event, url) {
 
     //Seperate the URI and the parameter
     var deeplink = String(url).split('cal-cam://')
+    var deeplink = deeplink[1]
     console.log(deeplink)
 
     /* 
@@ -160,9 +161,14 @@ app.on('open-url', function(event, url) {
     they will have to click link again to call the camera.
     */
     if (app.isReady() == true) {
-        console.log(deeplink[1])
-        if (deeplink[1].length >= 10) {
-            var camera = new Camera(deeplink[1])
+        console.log(deeplink)
+        if (deeplink.length >= 10) {
+            if (deeplink.includes('?')) {
+                console.log(deeplink)
+            } else {
+                var camera = new Camera(deeplink)
+            }
+
         } else {
             reopen(app)
         }
