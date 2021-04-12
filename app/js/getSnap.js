@@ -15,7 +15,7 @@ var HttpClient = function() {
     }
 }
 
-
+document.createElement('meta').httpEquiv('refresh').content('5')
 var data = '';
 var cors = 'https://cal-cams.herokuapp.com/'
 var url = ['https://cwwp2.dot.ca.gov/data/d1/cctv/cctvStatusD01.json',

@@ -48,7 +48,7 @@ if (process.platform === 'win32') {
 
 //==Widget Window==
 class Camera {
-    constructor(url) {
+    constructor(url, updatetime) {
         this.url = url
         this.window = new BrowserWindow({
                 width: 310,
@@ -83,11 +83,9 @@ class Camera {
 
         this.window.webContents.on('did-finish-load', () => {
             this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set text color on webpage
-            this.window.webContents.executeJavaScript("document.getElementById('poster-MediaController-PlayPauseButton').click()", true)
-            this.window.webContents.on('did-stop-loading', () => {
-                this.window.webContents.executeJavaScript("document.getElementById('poster-MediaController-PlayPauseButton').click()", true)
-
-            })
+            if (updatetime != 0) {
+                this.window.webContents.executeJavaScript("var head = document.getElementsByName('head')\;var a = document.createElement('meta'); a.httpEquiv = 'refresh'; a.content = '" + updatetime + "'; head.appendChild(a)\;")
+            }
 
         })
     }
@@ -164,9 +162,11 @@ app.on('open-url', function(event, url) {
         console.log(deeplink)
         if (deeplink.length >= 10) {
             if (deeplink.includes('?')) {
-                console.log(deeplink)
+                var updatetime = deeplink.split('?')
+                console.log(updatetime)
+                var camera = new Camera(deeplink, updatetime[1])
             } else {
-                var camera = new Camera(deeplink)
+                var camera = new Camera(deeplink, 0)
             }
 
         } else {
