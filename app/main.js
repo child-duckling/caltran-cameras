@@ -25,7 +25,7 @@ async function showWindow() {
 
 //URLs
 var source = 'https://github.com/child-duckling/caltran-cameras'
-var host = 'https://duckling.pw/caltran-cameras'
+var host = 'https://duckling.pw/caltran-cameras/app/'
 
 //TODO: Convert into settings
 var transparentCameraWindow = true
@@ -121,14 +121,14 @@ app.whenReady().then(() => {
         width: 1000,
         height: 600,
         webPreferences: {
-            nodeIntegration: true,
-            enableRemoteModule: true,
+            nodeIntegration: false,
+            enableRemoteModule: false,
         },
     });
 
     // Set the icon
-    main.setIcon('build/icon.png')
-    main.loadFile('pages/live.html')
+    //main.setIcon('build/icon.png')
+    main.loadURL(host + 'pages/live.html')
         //Hide the app even if activationPolicy is set to 'accessory' to be safe
         //Open the list
         //main.blur()
