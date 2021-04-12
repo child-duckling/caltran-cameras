@@ -5,7 +5,7 @@ const settings = require('electron-settings')
 const { electron } = require('process')
 
 
-
+/*
 //-------------AUTH------------------
 const { createAuthWindow } = require('./auth/auth-process');
 const createAppWindow = require('./auth/app-process');
@@ -21,7 +21,7 @@ async function showWindow() {
     //}
 }
 //-------------END AUTH--------------
-
+*/
 
 //URLs
 var source = 'https://github.com/child-duckling/caltran-cameras'
