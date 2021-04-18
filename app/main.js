@@ -53,11 +53,11 @@ class Camera {
         this.window = new BrowserWindow({
                 width: 310,
                 height: 425,
-                transparent: transparentCameraWindow,
-                frame: winOnlyNotTransFrame,
+                transparent: false,
+                frame: false,
                 webPreferences: {
                     webSecurity: false,
-                    contextIsolation: true
+                    contextIsolation: false
                 },
                 alwaysOnTop: true,
                 resizable: false,
@@ -96,7 +96,7 @@ class Camera {
 
 
 
-
+console.log(`Platform: ${process.platform}`)
 
 
 
@@ -110,7 +110,7 @@ app.whenReady().then(() => {
     setupMenu()
 
     //Set the activationPolicy for macOS1
-    app.setActivationPolicy(activationPolicy)
+    //app.setActivationPolicy(activationPolicy)
 
     //showWindow()
 
@@ -128,7 +128,15 @@ app.whenReady().then(() => {
 
     // Set the icon
     //main.setIcon('build/icon.png')
-    main.loadURL(host + 'pages/live.html')
+    if (process.platform == 'win32'){
+
+        main.loadURL(`${host}/pages/url/live.htm`)
+
+    } else{
+
+        main.loadURL(`${host}/pages/uri/live.htm`)
+    }
+    
         //Hide the app even if activationPolicy is set to 'accessory' to be safe
         //Open the list
         //main.blur()
@@ -138,12 +146,13 @@ app.whenReady().then(() => {
 
 app.setAsDefaultProtocolClient('cal-cam')
 
+/*
 // On Windows, clicking the URI opens the list again without opening the window, this prevents that.
 const lock = app.requestSingleInstanceLock()
 if (!lock) {
     app.quit()
 }
-
+*/
 app.on('open-url', function(event, url) {
 
     //Stop the navigation to about:blank
