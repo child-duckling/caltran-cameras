@@ -5,6 +5,10 @@ const settings = require('electron-settings')
 const { electron } = require('process')
 
 
+//Auto Update
+//const { autoUpdater } = require("electron-updater")
+
+
 /*
 //-------------AUTH------------------
 const { createAuthWindow } = require('./auth/auth-process');
@@ -33,9 +37,9 @@ var openWindowReletiveToMousePos = false //L57
 var customColor = 'rgb(255, 255, 255)' //L161
 var activationPolicy = 'regular' //L88
 var openListWhenAppStart = true //L97
-var defaultMode = 2
-
-// Windows needs the frame to be transparent too
+var defaultPage = 1 //1 = Live ; 2= Snap
+var randomColor = true
+    // Windows needs the frame to be transparent too
 var winOnlyNotTransFrame
 if (process.platform === 'win32') {
     winOnlyNotTransFrame = false
@@ -49,6 +53,8 @@ if (process.platform === 'win32') {
 //==Widget Window==
 class Camera {
     constructor(url, updatetime) {
+        updatetime = updatetime || null
+        this.updatetime = updatetime
         this.url = url
         this.window = new BrowserWindow({
                 width: 310,
@@ -62,19 +68,19 @@ class Camera {
                 alwaysOnTop: true,
                 resizable: false,
                 fullscreenable: false
+                    //titleBarStyle: 'customButtonsOnHover',
             })
             //return this.url, this.window
 
-        console.log(this.url)
+        console.log(this.url + ' : ' + updatetime)
 
         this.window.loadURL(this.url)
 
+        //Window party trick where the window opens reletive to the mouse position
         /*
-        Window party trick where the window opens reletive to the mouse position
-
-        var m = screen.getCursorScreenPoint() 
-        console.log(m)
-        this.window.setPosition(m.x + 175, m.y / 3)
+                var m = screen.getCursorScreenPoint()
+                console.log(m)
+                this.window.setPosition(m.x + 175, m.y / 3)
         */
         this.window.on('close', () => {
             console.log(this.window.getTitle() + " closed")
@@ -82,11 +88,19 @@ class Camera {
         })
 
         this.window.webContents.on('did-finish-load', () => {
-            this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set text color on webpage
-            if (updatetime != 0) {
-                this.window.webContents.executeJavaScript("var head = document.getElementsByName('head')\;var a = document.createElement('meta'); a.httpEquiv = 'refresh'; a.content = '" + updatetime + "'; head.appendChild(a)\;")
+            if (updatetime != null) {
+                this.window.webContents.executeJavaScript("var a = document.getElementsByTagName('head')\;a[0].innerHTML = \'<meta http-equiv=\"refresh\" content=" + (this.updatetime * 60) + ">'")
+            } else {
+                this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set text color on webpage
+                this.window.webContents.executeJavaScript("var a = document.getElementsByTagName('meta')\;a[1].outerHTML = ''")
             }
 
+        })
+        this.window.webContents.on('before-input-event', (event, input) => {
+            if (input.control && input.key.toLowerCase() === 'm') {
+                console.log('moving')
+                event.preventDefault()
+            }
         })
     }
     getInfo() {
@@ -96,14 +110,18 @@ class Camera {
 
 
 
-
+// On Windows, clicking the URI opens the list again without opening the window, this prevents that.
+const lock = app.requestSingleInstanceLock()
+if (!lock) {
+    app.quit()
+}
 
 
 
 app.whenReady().then(() => {
     //Check the install before things go wrong
     checkInstall(app)
-
+        //autoUpdater.checkForUpdatesAndNotify()
 
 
     //Self-explanitory
@@ -120,29 +138,27 @@ app.whenReady().then(() => {
     let main = new BrowserWindow({
         width: 1000,
         height: 600,
-        webPreferences: {
-            nodeIntegration: false,
-            enableRemoteModule: false,
-        },
     });
 
     // Set the icon
     //main.setIcon('build/icon.png')
-    main.loadURL(host + 'pages/live.html')
-        //Hide the app even if activationPolicy is set to 'accessory' to be safe
-        //Open the list
-        //main.blur()
-        //main.hide()
-        //shell.openExternal(host + '/web/live.html')
+
+    if (defaultPage == 1) {
+
+        main.loadFile(app.getAppPath() + '/pages/live.html')
+    } else {
+        main.loadFile(app.getAppPath() + '/pages/snap.html')
+    }
+
+    //Hide the app even if activationPolicy is set to 'accessory' to be safe
+    //Open the list
+    //main.blur()
+    //main.hide()
+    //shell.openExternal(host + '/web/live.html')
 })
 
 app.setAsDefaultProtocolClient('cal-cam')
 
-// On Windows, clicking the URI opens the list again without opening the window, this prevents that.
-const lock = app.requestSingleInstanceLock()
-if (!lock) {
-    app.quit()
-}
 
 app.on('open-url', function(event, url) {
 
@@ -164,9 +180,9 @@ app.on('open-url', function(event, url) {
             if (deeplink.includes('?')) {
                 var updatetime = deeplink.split('?')
                 console.log(updatetime)
-                var camera = new Camera(deeplink, updatetime[1])
+                var camera = new Camera(updatetime[0], updatetime[1])
             } else {
-                var camera = new Camera(deeplink, 0)
+                var camera = new Camera(deeplink)
             }
 
         } else {
