@@ -63,7 +63,7 @@ class Camera {
                 frame: winOnlyNotTransFrame,
                 webPreferences: {
                     webSecurity: false,
-                    contextIsolation: true
+                    contextIsolation: false
                 },
                 alwaysOnTop: true,
                 resizable: false,
@@ -110,11 +110,7 @@ class Camera {
 
 
 
-// On Windows, clicking the URI opens the list again without opening the window, this prevents that.
-const lock = app.requestSingleInstanceLock()
-if (!lock) {
-    app.quit()
-}
+console.log(`Platform: ${process.platform}`)
 
 
 
@@ -128,7 +124,7 @@ app.whenReady().then(() => {
     setupMenu()
 
     //Set the activationPolicy for macOS1
-    app.setActivationPolicy(activationPolicy)
+    //app.setActivationPolicy(activationPolicy)
 
     //showWindow()
 
@@ -142,12 +138,13 @@ app.whenReady().then(() => {
 
     // Set the icon
     //main.setIcon('build/icon.png')
+    if (process.platform == 'win32') {
 
-    if (defaultPage == 1) {
+        main.loadURL(`${host}pages/url/live.html`)
 
-        main.loadFile(app.getAppPath() + '/pages/live.html')
     } else {
-        main.loadFile(app.getAppPath() + '/pages/snap.html')
+
+        main.loadURL(`${host}pages/uri/live.html`)
     }
 
     //Hide the app even if activationPolicy is set to 'accessory' to be safe
@@ -159,7 +156,13 @@ app.whenReady().then(() => {
 
 app.setAsDefaultProtocolClient('cal-cam')
 
-
+/*
+// On Windows, clicking the URI opens the list again without opening the window, this prevents that.
+const lock = app.requestSingleInstanceLock()
+if (!lock) {
+    app.quit()
+}
+*/
 app.on('open-url', function(event, url) {
 
     //Stop the navigation to about:blank
