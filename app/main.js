@@ -226,11 +226,19 @@ function setupMenu() {
                     const { shell } = require('electron')
                     await shell.openExternal(source + '/wiki')
                 }
+            }, {
+                label: 'Menu',
+                click: async() => {
+                    const { app } = require('electron')
+                    reopen(app)
+                }
             }]
         })
         return defaultMenu
     })
 }
+
+
 
 
 function textColor() {
