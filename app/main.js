@@ -60,19 +60,17 @@ class Camera {
                 width: 310,
                 height: 425,
                 transparent: transparentCameraWindow,
-                frame: winOnlyNotTransFrame,
+                frame: true,
                 webPreferences: {
                     webSecurity: false,
                     contextIsolation: false
                 },
                 alwaysOnTop: true,
                 resizable: false,
-                fullscreenable: false
+                fullscreenable: true
                     //titleBarStyle: 'customButtonsOnHover',
             })
-            //return this.url, this.window
-
-        console.log(this.url + ' : ' + updatetime)
+            //return this.url, this.window☏
 
         this.window.loadURL(this.url)
 
@@ -83,9 +81,10 @@ class Camera {
                 this.window.setPosition(m.x + 175, m.y / 3)
         */
         this.window.on('close', () => {
-            console.log(this.window.getTitle() + " closed")
-
+            console.log(`\x1b[31m✖︎\x1b[0m Closed ${this.window.webContents.getURL()}`)
         })
+
+
 
         this.window.webContents.on('did-finish-load', () => {
             if (updatetime != null) {
@@ -109,9 +108,16 @@ class Camera {
 }
 
 
+if (process.platform == 'darwin') {
 
-console.log(`Platform: ${process.platform}`)
+    console.log(`\x1b[32m✔\x1b[0m Platform: `)
 
+
+} else {
+
+    console.log(`\x1b[32m✔\x1b[0m Platform: ${process.platform}`)
+
+}
 
 
 app.whenReady().then(() => {
@@ -141,10 +147,11 @@ app.whenReady().then(() => {
     if (process.platform == 'win32') {
 
         main.loadURL(`${host}pages/url/live.html`)
-
+        console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/url/live.html`)
     } else {
 
         main.loadURL(`${host}pages/uri/live.html`)
+        console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/uri/live.html`)
     }
 
     //Hide the app even if activationPolicy is set to 'accessory' to be safe
@@ -155,30 +162,18 @@ app.whenReady().then(() => {
 })
 
 app.setAsDefaultProtocolClient('cal-cam')
-
-/*
-// On Windows, clicking the URI opens the list again without opening the window, this prevents that.
-const lock = app.requestSingleInstanceLock()
-if (!lock) {
-    app.quit()
-}
-*/
 app.on('open-url', function(event, url) {
-
     //Stop the navigation to about:blank
     event.preventDefault()
-
-    //Seperate the URI and the parameter
+        //Seperate the URI and the parameter
     var deeplink = String(url).split('cal-cam://')
     var deeplink = deeplink[1]
-    console.log(deeplink)
-
-    /* 
-    If the app isn't open, the URI call will open it for them but the camera call will be lost, 
-    they will have to click link again to call the camera.
-    */
+    console.log(`\x1b[33m⎋\x1b[0m Popping out ${deeplink}`)
+        /* 
+        If the app isn't open, the URI call will open it for them but the camera call will be lost, 
+        they will have to click link again to call the camera.
+        */
     if (app.isReady() == true) {
-        console.log(deeplink)
         if (deeplink.length >= 10) {
             if (deeplink.includes('?')) {
                 var updatetime = deeplink.split('?')
@@ -194,9 +189,6 @@ app.on('open-url', function(event, url) {
     } else {
         reopen(app)
     }
-
-
-
 })
 
 
@@ -243,10 +235,8 @@ function setupMenu() {
 
 function textColor() {
     var color
-
     color = "rgb( " + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")"
-
-    console.log(color)
+    console.log(`\x1b[1m\x1b[33m©\x1b[0m Setting Color to ${color}`)
     return color
 }
 

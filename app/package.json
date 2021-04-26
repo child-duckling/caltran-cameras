@@ -4,17 +4,12 @@
     "description": "Lets you look at many different cameras at once",
     "keywords": [],
     "main": "./main.js",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "author": "child-duckling",
     "scripts": {
-        "start": "electron .",
-        "pack": "electron-builder --dir",
-        "dist": "electron-builder",
-        "macOS": "electron-builder -m",
-        "Win": "electron-builder -w",
-        "Linux": "electron-builder -l",
-        "all": "electron-builder -mwl",
-        "mac-win": "electron-builder -mw"
+        "start": "electron-forge start",
+        "package": "electron-forge package",
+        "make": "electron-forge make"
     },
     "dependencies": {
         "axios": "^0.21.1",
@@ -24,13 +19,18 @@
         "electron-json-storage": "^4.3.0",
         "electron-prompt": "^1.6.1",
         "electron-settings": "^4.0.2",
+        "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^7.0.0",
         "jwt-decode": "^3.1.2",
         "keytar": "^7.6.0"
     },
     "devDependencies": {
-        "electron": "^11.4.3",
-        "electron-builder": "22.9.1"
+        "@electron-forge/cli": "^6.0.0-beta.54",
+        "@electron-forge/maker-deb": "^6.0.0-beta.54",
+        "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+        "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+        "@electron-forge/maker-zip": "^6.0.0-beta.54",
+        "electron": "11.4.3"
     },
     "build": {
         "appId": "cacams",
@@ -42,6 +42,32 @@
         },
         "mac": {
             "category": "misc"
+        }
+    },
+    "config": {
+        "forge": {
+            "packagerConfig": {},
+            "makers": [{
+                    "name": "@electron-forge/maker-squirrel",
+                    "config": {
+                        "name": "ca_cams"
+                    }
+                },
+                {
+                    "name": "@electron-forge/maker-zip",
+                    "platforms": [
+                        "darwin"
+                    ]
+                },
+                {
+                    "name": "@electron-forge/maker-deb",
+                    "config": {}
+                },
+                {
+                    "name": "@electron-forge/maker-rpm",
+                    "config": {}
+                }
+            ]
         }
     }
 }
