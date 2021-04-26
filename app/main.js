@@ -143,7 +143,7 @@ app.whenReady().then(() => {
     });
 
     // Set the icon
-    //main.setIcon('build/icon.png')
+    main.setIcon('assets/icon.png')
     if (process.platform == 'win32') {
 
         main.loadURL(`${host}pages/url/live.html`)
@@ -153,6 +153,17 @@ app.whenReady().then(() => {
         main.loadURL(`${host}pages/uri/live.html`)
         console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/uri/live.html`)
     }
+
+
+
+    main.webContents.on('did-fail-load', () => {
+        console.log('did-fail-load');
+        main.loadURL(url.format({
+            pathname: `${host}pages`,
+            protocol: 'https:',
+            slashes: true
+        }));
+    });
 
     //Hide the app even if activationPolicy is set to 'accessory' to be safe
     //Open the list
