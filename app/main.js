@@ -29,7 +29,7 @@ async function showWindow() {
 
 //URLs
 var source = 'https://github.com/child-duckling/caltran-cameras'
-var host = 'https://duckling.pw/caltran-cameras/app/'
+var host = 'https://duckling.pw/caltran-cameras/'
 
 //TODO: Convert into settings
 var transparentCameraWindow = true
