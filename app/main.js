@@ -1,13 +1,25 @@
 //  Electron stuff I might need
-const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem, screen } = require('electron')
-const Menu = require("electron-create-menu")
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem, screen, Menu, globalShortcut } = require('electron')
+    //const Menu = require("electron-create-menu")
 const settings = require('electron-settings')
 const { electron } = require('process')
+const checkInternetConnected = require('check-internet-connected')
 
 
-//Auto Update
-//const { autoUpdater } = require("electron-updater")
+//#region comments 
 
+
+
+
+//#region auto update
+/*
+require('update-electron-app')({
+    repo: 'child-duckling/caltran-cameras',
+    updateInterval: '1 hour'
+})
+
+*/
+//#endregion auto update
 
 /*
 //-------------AUTH------------------
@@ -26,14 +38,15 @@ async function showWindow() {
 }
 //-------------END AUTH--------------
 */
-
+//#endregion comments
 //URLs
 var source = 'https://github.com/child-duckling/caltran-cameras'
 var host = 'https://duckling.pw/caltran-cameras/'
 
+
 //TODO: Convert into settings
 var transparentCameraWindow = true
-var openWindowReletiveToMousePos = false //L57
+var openWindowReletiveToMousePos = true //L57
 var customColor = 'rgb(255, 255, 255)' //L161
 var activationPolicy = 'regular' //L88
 var openListWhenAppStart = true //L97
@@ -47,8 +60,15 @@ if (process.platform === 'win32') {
     winOnlyNotTransFrame = true
 }
 
-
-
+settings.set({
+    transparentCameraWindow: true,
+    openWindowReletiveToMousePos: false,
+    customColor: '',
+    randomColor: true,
+    activationPolicy: 'regular',
+    openListWhenAppStart: 'true',
+    defaultPage: 1
+})
 
 //==Widget Window==
 class Camera {
@@ -59,7 +79,7 @@ class Camera {
         this.window = new BrowserWindow({
                 width: 310,
                 height: 425,
-                transparent: transparentCameraWindow,
+                transparent: settings.getSync('transparentCameraWindow'),
                 frame: true,
                 webPreferences: {
                     webSecurity: false,
@@ -95,11 +115,12 @@ class Camera {
             }
 
         })
-        this.window.webContents.on('before-input-event', (event, input) => {
-            if (input.control && input.key.toLowerCase() === 'm') {
-                console.log('moving')
-                event.preventDefault()
-            }
+        this.window.webContents.on('leave-html-full-screen', () => {
+
+            let cam = new Camera(this.url)
+            this.window.close()
+
+
         })
     }
     getInfo() {
@@ -107,22 +128,20 @@ class Camera {
     }
 }
 
-
 if (process.platform == 'darwin') {
-
-    console.log(`\x1b[32m✔\x1b[0m Platform: `)
-
-
+    console.log(`\x1b[32m✔\x1b[0m Platform:  (${process.getSystemVersion()} | ${process.} `)
 } else {
-
     console.log(`\x1b[32m✔\x1b[0m Platform: ${process.platform}`)
-
 }
 
-
 app.whenReady().then(() => {
+    globalShortcut.register('CommandOrControl+,', () => {
+        openSettings(app)
+    })
+}).then(() => {
     //Check the install before things go wrong
     checkInstall(app)
+    checkInternet(app)
         //autoUpdater.checkForUpdatesAndNotify()
 
 
@@ -140,10 +159,14 @@ app.whenReady().then(() => {
     let main = new BrowserWindow({
         width: 1000,
         height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+        }
     });
 
     // Set the icon
-    main.setIcon('assets/icon.png')
+    //main.setIcon('assets/icon.png')
     if (process.platform == 'win32') {
 
         main.loadURL(`${host}pages/url/live.html`)
@@ -157,13 +180,29 @@ app.whenReady().then(() => {
 
 
     main.webContents.on('did-fail-load', () => {
-        console.log('did-fail-load');
-        main.loadURL(url.format({
-            pathname: `${host}pages`,
-            protocol: 'https:',
-            slashes: true
-        }));
+
+        if (app.isPackaged == false) {
+            devMode(main)
+
+        } else {
+            console.log(`\x1b[31m✖︎\x1b[0m No Internet Connection`)
+            online = false
+            dialog.showErrorBox('Caltrans Cameras', 'No Internet Connection')
+            app.quit()
+
+
+
+
+
+        }
+
+
     });
+
+    if (settings.get('recoveryLink').length >= 5) {
+        shell.openExternal(String(settings.get('recoveryLink')))
+        settings.set({ recoveryLink: null })
+    }
 
     //Hide the app even if activationPolicy is set to 'accessory' to be safe
     //Open the list
@@ -171,7 +210,6 @@ app.whenReady().then(() => {
     //main.hide()
     //shell.openExternal(host + '/web/live.html')
 })
-
 app.setAsDefaultProtocolClient('cal-cam')
 app.on('open-url', function(event, url) {
     //Stop the navigation to about:blank
@@ -180,6 +218,8 @@ app.on('open-url', function(event, url) {
     var deeplink = String(url).split('cal-cam://')
     var deeplink = deeplink[1]
     console.log(`\x1b[33m⎋\x1b[0m Popping out ${deeplink}`)
+
+    checkInternet(app)
         /* 
         If the app isn't open, the URI call will open it for them but the camera call will be lost, 
         they will have to click link again to call the camera.
@@ -195,20 +235,19 @@ app.on('open-url', function(event, url) {
             }
 
         } else {
-            reopen(app)
+            dialog.showErrorBox('Caltrans Cameras', `Invalid Link`)
         }
     } else {
+        settings.set({ recoveryLink: `${deeplink}` })
         reopen(app)
     }
 })
-
 
 /*
 Some people are sooo exited to open the app that they forget to drag it into the Applications folder.
 Electron does not behave properly without it being in the Applications folder, so if they ignore the arrow in the .dmg,
 I just do it for them, but with the cost of them having to enter their password.
 */
-
 function checkInstall(app) {
     if (app.isPackaged == true && app.isInApplicationsFolder() == false && process.platform == 'darwin') {
         app.moveToApplicationsFolder()
@@ -216,12 +255,26 @@ function checkInstall(app) {
     }
 }
 
-
-
 function setupMenu() {
-    Menu()
-    Menu((defaultMenu, separator) => {
-        defaultMenu.push({
+    const isMac = process.platform === 'darwin'
+
+    const template = [
+        // { role: 'appMenu' }
+        ...(isMac ? [{
+            label: app.name,
+            submenu: [
+                { role: 'about' },
+                { type: 'separator' },
+                { role: 'services' },
+                { type: 'separator' },
+                { role: 'hide' },
+                { role: 'hideothers' },
+                { role: 'unhide' },
+                { type: 'separator' },
+                { role: 'quit' }
+            ]
+        }] : []),
+        {
             role: 'help',
             submenu: [{
                 label: 'Wiki / Documentation',
@@ -230,19 +283,24 @@ function setupMenu() {
                     await shell.openExternal(source + '/wiki')
                 }
             }, {
-                label: 'Menu',
+                label: 'Reopen App (if frozen / buggy)',
                 click: async() => {
                     const { app } = require('electron')
                     reopen(app)
+                },
+            }, {
+                label: 'Settings',
+                click: async() => {
+                    const { app } = require('electron')
+                    openSettings(app)
                 }
             }]
-        })
-        return defaultMenu
-    })
+        }
+    ]
+
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
 }
-
-
-
 
 function textColor() {
     var color
@@ -254,5 +312,92 @@ function textColor() {
 function reopen(app) {
     app.relaunch()
     app.exit()
+}
+
+function checkInternet() {
+    const config = {
+        timeout: 5000, //timeout connecting to each try (default 5000)
+        retries: 3, //number of retries to do before failing (default 5)
+        domain: 'duckling.pw' //the domain to check DNS record of
+    }
+    let online
+    checkInternetConnected(config)
+        .then(() => {
+            console.log(`\x1b[32m✔\x1b[0m Network Detected`);
+            online = true
+        }).catch((err) => {
+            console.log(`\x1b[31m✖︎\x1b[0m No Network Detected`)
+            online = false
+            app.quit()
+            dialog.showErrorBox('Caltrans Cameras', 'No Network Detected')
+        });
+
+
+
+}
+
+function openSettings(app) {
+
+
+    const settingsPage = new BrowserWindow({
+        height: 820,
+        width: 410,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            enableRemoteModule: true
+        }
+    });
+    settingsPage.loadFile(`settings.html`);
+    settingsPage.hide()
+    ipcMain.on('close', (transparentCameraWindow, openWindowReletiveToMousePos, randomColor) => {
+        console.log('_________Settings_________')
+        settings.set({
+            transparentCameraWindow: transparentCameraWindow,
+            openWindowReletiveToMousePos: openWindowReletiveToMousePos,
+            randomColor: randomColor
+        }).then(() => {
+            console.log(`transparentCameraWindow : ${String(transparentCameraWindow)}\n openWindowReletiveToMousePos : ${openWindowReletiveToMousePos}\n randomColor ${randomColor}`)
+
+
+        })
+        settingsPage.reload()
+
+
+        //document.getElementById('transparentCameraWindow').checked, document.getElementById('openWindowReletiveToMousePos').checked, document.getElementById('randomColor').checked
+    })
+
+    settingsPage.webContents.on('did-finish-load', () => {
+        settingsPage.webContents.executeJavaScript(`document.getElementById('transparentCameraWindow').checked = ${settings.getSync('transparentCameraWindow')}`)
+        settingsPage.webContents.executeJavaScript(`document.getElementById('openWindowReletiveToMousePos').checked = ${settings.getSync('openWindowReletiveToMousePos')}`)
+        settingsPage.webContents.executeJavaScript(`document.getElementById('randomColor').checked = ${settings.getSync('randomColor')}`)
+        settingsPage.show()
+        settingsPage.webContents.openDevTools()
+    })
+
+}
+
+function devMode(main) {
+    console.log(`\x1b[1m\x1b[33m©\x1b[0m DDDDDDDDDDDDDDD        EEEEEEEEEEEEE        VV        VV`)
+    console.log(`\x1b[1m\x1b[33m©\x1b[0m D             DD       E                     VV      VV `)
+    console.log(`\x1b[1m\x1b[33m©\x1b[0m D              D       EEEEEEE                VV    VV  `)
+    console.log(`\x1b[1m\x1b[33m©\x1b[0m D              D       E                       VV  VV   `)
+    console.log(`\x1b[1m\x1b[33m©\x1b[0m DDDDDDDDDDDDDDD        EEEEEEEEEEEE              VV    `)
+
+    if (process.platform == 'win32') {
+
+        main.loadFile('../pages/url/live.html')
+        console.log(`\x1b[32m✔\x1b[0m Loaded ..pages/url/live.html`)
+    } else {
+
+        main.loadFile('../pages/uri/live.html')
+        console.log(`\x1b[32m✔\x1b[0m Loaded ../pages/uri/live.html`)
+    }
+
+
+
+
+
+
 
 }

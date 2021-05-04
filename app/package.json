@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "axios": "^0.21.1",
+        "check-internet-connected": "^2.0.5",
         "discord-rpc": "^3.2.0",
         "electron-create-menu": "^3.0.1",
         "electron-dl": "^3.1.0",
@@ -22,7 +23,8 @@
         "electron-squirrel-startup": "^1.0.0",
         "electron-store": "^7.0.0",
         "jwt-decode": "^3.1.2",
-        "keytar": "^7.6.0"
+        "keytar": "^7.6.0",
+        "update-electron-app": "^2.0.1"
     },
     "devDependencies": {
         "@electron-forge/cli": "^6.0.0-beta.54",
@@ -30,7 +32,7 @@
         "@electron-forge/maker-rpm": "^6.0.0-beta.54",
         "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
         "@electron-forge/maker-zip": "^6.0.0-beta.54",
-        "electron": "11.4.3"
+        "electron": "^11.4.3"
     },
     "build": {
         "appId": "cacams",
@@ -49,7 +51,8 @@
             "packagerConfig": {
                 "icon": "./assets/icon.png"
             },
-            "makers": [{
+            "makers": [
+                {
                     "name": "@electron-forge/maker-squirrel",
                     "config": {
                         "name": "ca_cams"
