@@ -129,7 +129,7 @@ class Camera {
 }
 
 if (process.platform == 'darwin') {
-    console.log(`\x1b[32m✔\x1b[0m Platform:  (${process.getSystemVersion()} | ${process.} `)
+    console.log(`\x1b[32m✔\x1b[0m Platform:  (${process.getSystemVersion()} | ${process.electron} `)
 } else {
     console.log(`\x1b[32m✔\x1b[0m Platform: ${process.platform}`)
 }
