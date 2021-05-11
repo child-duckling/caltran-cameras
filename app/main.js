@@ -1,5 +1,5 @@
 //  Electron stuff I might need
-const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem, screen, Menu, globalShortcut } = require('electron')
+const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents, shell, MenuItem, screen, Menu, globalShortcut, ipcRenderer } = require('electron')
     //const Menu = require("electron-create-menu")
 const settings = require('electron-settings')
 const { electron } = require('process')
@@ -54,6 +54,8 @@ var defaultPage = 1 //1 = Live ; 2= Snap
 var randomColor = true
     // Windows needs the frame to be transparent too
 var winOnlyNotTransFrame
+
+//#region app
 if (process.platform === 'win32') {
     winOnlyNotTransFrame = false
 } else {
@@ -127,6 +129,66 @@ class Camera {
         return this.url, this.window.getTitle()
     }
 }
+
+class Settings {
+    constructor() {
+        this.settingsPage = new BrowserWindow({
+            height: 700,
+            width: 410,
+            webPreferences: {
+                nodeIntegration: true,
+                enableRemoteModule: true,
+                enableRemoteModule: true
+            }
+        });
+        this.settingsPage.setTitle('Settings')
+        this.settingsPage.loadFile(`settings.html`);
+        this.settingsPage.hide()
+        ipcMain.on('close', (event, transparentCameraWindow, openWindowReletiveToMousePos, randomColor, document) => {
+            console.log('_________Settings_________')
+            settings.set({
+                //transparentCameraWindow: transparentCameraWindow,
+                openWindowReletiveToMousePos: openWindowReletiveToMousePos,
+                randomColor: randomColor
+            }).then(() => {
+                console.log(`transparentCameraWindow : ${transparentCameraWindow}\nopenWindowReletiveToMousePos : ${openWindowReletiveToMousePos}\n randomColor ${randomColor}`)
+                    //
+                this.settingsPage.close()
+            })
+
+
+
+            //document.getElementById('transparentCameraWindow').checked, document.getElementById('openWindowReletiveToMousePos').checked, document.getElementById('randomColor').checked
+        })
+
+        this.settingsPage.webContents.on('did-finish-load', () => {
+            this.settingsPage.webContents.executeJavaScript(`document.getElementById('transparentCameraWindow').checked = ${settings.getSync('transparentCameraWindow')}`)
+            this.settingsPage.webContents.executeJavaScript(`document.getElementById('openWindowReletiveToMousePos').checked = ${settings.getSync('openWindowReletiveToMousePos')}`)
+            this.settingsPage.webContents.executeJavaScript(`document.getElementById('randomColor').checked = ${settings.getSync('randomColor')}`)
+            this.settingsPage.show()
+                //settingsPage.webContents.openDevTools()
+        })
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+}
+
+
+
+
+
 
 if (process.platform == 'darwin') {
     console.log(`\x1b[32m✔\x1b[0m Platform:  (${process.getSystemVersion()} | ${process.electron} `)
@@ -212,42 +274,42 @@ app.whenReady().then(() => {
 })
 app.setAsDefaultProtocolClient('cal-cam')
 app.on('open-url', function(event, url) {
-    //Stop the navigation to about:blank
-    event.preventDefault()
-        //Seperate the URI and the parameter
-    var deeplink = String(url).split('cal-cam://')
-    var deeplink = deeplink[1]
-    console.log(`\x1b[33m⎋\x1b[0m Popping out ${deeplink}`)
+        //Stop the navigation to about:blank
+        event.preventDefault()
+            //Seperate the URI and the parameter
+        var deeplink = String(url).split('cal-cam://')
+        var deeplink = deeplink[1]
+        console.log(`\x1b[33m⎋\x1b[0m Popping out ${deeplink}`)
 
-    checkInternet(app)
-        /* 
-        If the app isn't open, the URI call will open it for them but the camera call will be lost, 
-        they will have to click link again to call the camera.
-        */
-    if (app.isReady() == true) {
-        if (deeplink.length >= 10) {
-            if (deeplink.includes('?')) {
-                var updatetime = deeplink.split('?')
-                console.log(updatetime)
-                var camera = new Camera(updatetime[0], updatetime[1])
+        checkInternet(app)
+            /* 
+            If the app isn't open, the URI call will open it for them but the camera call will be lost, 
+            they will have to click link again to call the camera.
+            */
+        if (app.isReady() == true) {
+            if (deeplink.length >= 10) {
+                if (deeplink.includes('?')) {
+                    var updatetime = deeplink.split('?')
+                    console.log(updatetime)
+                    var camera = new Camera(updatetime[0], updatetime[1])
+                } else {
+                    var camera = new Camera(deeplink)
+                }
+
             } else {
-                var camera = new Camera(deeplink)
+                dialog.showErrorBox('Caltrans Cameras', `Invalid Link`)
             }
-
         } else {
-            dialog.showErrorBox('Caltrans Cameras', `Invalid Link`)
+            settings.set({ recoveryLink: `${deeplink}` })
+            reopen(app)
         }
-    } else {
-        settings.set({ recoveryLink: `${deeplink}` })
-        reopen(app)
-    }
-})
-
-/*
-Some people are sooo exited to open the app that they forget to drag it into the Applications folder.
-Electron does not behave properly without it being in the Applications folder, so if they ignore the arrow in the .dmg,
-I just do it for them, but with the cost of them having to enter their password.
-*/
+    })
+    //#endregion app
+    /*
+    Some people are sooo exited to open the app that they forget to drag it into the Applications folder.
+    Electron does not behave properly without it being in the Applications folder, so if they ignore the arrow in the .dmg,
+    I just do it for them, but with the cost of them having to enter their password.
+    */
 function checkInstall(app) {
     if (app.isPackaged == true && app.isInApplicationsFolder() == false && process.platform == 'darwin') {
         app.moveToApplicationsFolder()
@@ -278,18 +340,21 @@ function setupMenu() {
             role: 'help',
             submenu: [{
                 label: 'Wiki / Documentation',
+                accelerator: process.platform === 'darwin' ? 'Cmd+.' : 'Alt+.',
                 click: async() => {
                     const { shell } = require('electron')
                     await shell.openExternal(source + '/wiki')
                 }
             }, {
                 label: 'Reopen App (if frozen / buggy)',
+                accelerator: process.platform === 'darwin' ? 'Cmd+R' : 'Alt+R',
                 click: async() => {
                     const { app } = require('electron')
                     reopen(app)
                 },
             }, {
                 label: 'Settings',
+                accelerator: process.platform === 'darwin' ? 'Cmd+,' : 'Alt+,',
                 click: async() => {
                     const { app } = require('electron')
                     openSettings(app)
@@ -328,8 +393,8 @@ function checkInternet() {
         }).catch((err) => {
             console.log(`\x1b[31m✖︎\x1b[0m No Network Detected`)
             online = false
-            app.quit()
-            dialog.showErrorBox('Caltrans Cameras', 'No Network Detected')
+                //app.quit()
+                //dialog.showErrorBox('Caltrans Cameras', 'No Network Detected')
         });
 
 
@@ -337,44 +402,7 @@ function checkInternet() {
 }
 
 function openSettings(app) {
-
-
-    const settingsPage = new BrowserWindow({
-        height: 820,
-        width: 410,
-        webPreferences: {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            enableRemoteModule: true
-        }
-    });
-    settingsPage.loadFile(`settings.html`);
-    settingsPage.hide()
-    ipcMain.on('close', (transparentCameraWindow, openWindowReletiveToMousePos, randomColor) => {
-        console.log('_________Settings_________')
-        settings.set({
-            transparentCameraWindow: transparentCameraWindow,
-            openWindowReletiveToMousePos: openWindowReletiveToMousePos,
-            randomColor: randomColor
-        }).then(() => {
-            console.log(`transparentCameraWindow : ${String(transparentCameraWindow)}\n openWindowReletiveToMousePos : ${openWindowReletiveToMousePos}\n randomColor ${randomColor}`)
-
-
-        })
-        settingsPage.reload()
-
-
-        //document.getElementById('transparentCameraWindow').checked, document.getElementById('openWindowReletiveToMousePos').checked, document.getElementById('randomColor').checked
-    })
-
-    settingsPage.webContents.on('did-finish-load', () => {
-        settingsPage.webContents.executeJavaScript(`document.getElementById('transparentCameraWindow').checked = ${settings.getSync('transparentCameraWindow')}`)
-        settingsPage.webContents.executeJavaScript(`document.getElementById('openWindowReletiveToMousePos').checked = ${settings.getSync('openWindowReletiveToMousePos')}`)
-        settingsPage.webContents.executeJavaScript(`document.getElementById('randomColor').checked = ${settings.getSync('randomColor')}`)
-        settingsPage.show()
-        settingsPage.webContents.openDevTools()
-    })
-
+    let a = new Settings()
 }
 
 function devMode(main) {
@@ -389,9 +417,9 @@ function devMode(main) {
         main.loadFile('../pages/url/live.html')
         console.log(`\x1b[32m✔\x1b[0m Loaded ..pages/url/live.html`)
     } else {
-
-        main.loadFile('../pages/uri/live.html')
-        console.log(`\x1b[32m✔\x1b[0m Loaded ../pages/uri/live.html`)
+        main.loadURL("chrome://dino")
+            //main.loadFile('../pages/uri/live.html')
+            //console.log(`\x1b[32m✔\x1b[0m Loaded ../pages/uri/live.html`)
     }
 
 
