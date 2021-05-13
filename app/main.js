@@ -69,7 +69,7 @@ settings.set({
     randomColor: true,
     activationPolicy: 'regular',
     openListWhenAppStart: 'true',
-    defaultPage: 1
+    defaultPage: true
 })
 
 //==Widget Window==
@@ -106,13 +106,16 @@ class Camera {
             console.log(`\x1b[31m✖︎\x1b[0m Closed ${this.window.webContents.getURL()}`)
         })
 
+        // https://docs.microsoft.com/en-us/visualstudio/liveshare/faq
 
 
         this.window.webContents.on('did-finish-load', () => {
             if (updatetime != null) {
                 this.window.webContents.executeJavaScript("var a = document.getElementsByTagName('head')\;a[0].innerHTML = \'<meta http-equiv=\"refresh\" content=" + (this.updatetime * 60) + ">'")
             } else {
-                this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set text color on webpage
+                if (settings.getSync('randomColor')) {
+                    this.window.webContents.insertCSS("#wx{position:absolute;top:270px;width:320px;color: " + textColor() + "}") //Set text color on webpage
+                }
                 this.window.webContents.executeJavaScript("var a = document.getElementsByTagName('meta')\;a[1].outerHTML = ''")
             }
 
@@ -144,15 +147,10 @@ class Settings {
         this.settingsPage.setTitle('Settings')
         this.settingsPage.loadFile(`settings.html`);
         this.settingsPage.hide()
-        ipcMain.on('close', (event, transparentCameraWindow, openWindowReletiveToMousePos, randomColor, document) => {
+        ipcMain.on('close', (event, settingsFromPage) => {
             console.log('_________Settings_________')
-            settings.set({
-                //transparentCameraWindow: transparentCameraWindow,
-                openWindowReletiveToMousePos: openWindowReletiveToMousePos,
-                randomColor: randomColor
-            }).then(() => {
-                console.log(`transparentCameraWindow : ${transparentCameraWindow}\nopenWindowReletiveToMousePos : ${openWindowReletiveToMousePos}\n randomColor ${randomColor}`)
-                    //
+            settings.set(settingsFromPage).then(() => {
+                //
                 this.settingsPage.close()
             })
 
@@ -166,7 +164,7 @@ class Settings {
             this.settingsPage.webContents.executeJavaScript(`document.getElementById('openWindowReletiveToMousePos').checked = ${settings.getSync('openWindowReletiveToMousePos')}`)
             this.settingsPage.webContents.executeJavaScript(`document.getElementById('randomColor').checked = ${settings.getSync('randomColor')}`)
             this.settingsPage.show()
-                //settingsPage.webContents.openDevTools()
+            this.settingsPage.webContents.openDevTools()
         })
 
 
@@ -230,13 +228,27 @@ app.whenReady().then(() => {
     // Set the icon
     //main.setIcon('assets/icon.png')
     if (process.platform == 'win32') {
+        if (settings.getSync('defaultPage')) {
+            main.loadURL(`${host}pages/url/live.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/url/live.html`)
 
-        main.loadURL(`${host}pages/url/live.html`)
-        console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/url/live.html`)
+        } else {
+            main.loadURL(`${host}pages/url/snap.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/url/snap.html`)
+
+        }
+
     } else {
 
-        main.loadURL(`${host}pages/uri/live.html`)
-        console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/uri/live.html`)
+        if (settings.getSync('defaultPage')) {
+            main.loadURL(`${host}pages/uri/live.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/uri/live.html`)
+
+        } else {
+            main.loadURL(`${host}pages/uri/snap.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/uri/snap.html`)
+
+        }
     }
 
 
