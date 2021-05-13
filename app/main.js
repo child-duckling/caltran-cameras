@@ -41,7 +41,7 @@ async function showWindow() {
 //#endregion comments
 //URLs
 var source = 'https://github.com/child-duckling/caltran-cameras'
-var host = 'https://duckling.pw/caltran-cameras/'
+var host = 'https://caltranscameras.app/'
 
 
 //TODO: Convert into settings
