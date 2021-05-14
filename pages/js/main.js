@@ -16,3 +16,12 @@ function isElectron() {
 
     return false;
 }
+
+function github() {
+    if (isElectron()) {
+        const shell = require('electron');
+        shell.openExternal("https://github.com/child-duckling/caltran-cameras")
+    } else {
+        window.open("https://github.com/child-duckling/caltran-cameras", "_blank")
+    }
+}
