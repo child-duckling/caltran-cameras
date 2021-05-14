@@ -4,9 +4,9 @@ const { BrowserView, BrowserWindow, app, dialog, protocol, ipcMain, webContents,
 const settings = require('electron-settings')
 const { electron } = require('process')
 const checkInternetConnected = require('check-internet-connected')
-
-
-//#region comments 
+const firstRun = require('electron-first-run');
+const isFirstRun = firstRun()
+    //#region comments 
 
 
 
@@ -44,15 +44,8 @@ var source = 'https://github.com/child-duckling/caltran-cameras'
 var host = 'https://caltranscameras.app/'
 
 
-//TODO: Convert into settings
-var transparentCameraWindow = true
-var openWindowReletiveToMousePos = true //L57
-var customColor = 'rgb(255, 255, 255)' //L161
-var activationPolicy = 'regular' //L88
-var openListWhenAppStart = true //L97
-var defaultPage = 1 //1 = Live ; 2= Snap
-var randomColor = true
-    // Windows needs the frame to be transparent too
+
+// Windows needs the frame to be transparent too
 var winOnlyNotTransFrame
 
 //#region app
@@ -61,16 +54,18 @@ if (process.platform === 'win32') {
 } else {
     winOnlyNotTransFrame = true
 }
+if (isFirstRun) {
+    settings.set({
+        transparentCameraWindow: true,
+        openWindowReletiveToMousePos: false,
+        customColor: '',
+        randomColor: true,
+        activationPolicy: 'regular',
+        openListWhenAppStart: 'true',
+        defaultPage: true
+    })
+}
 
-settings.set({
-    transparentCameraWindow: true,
-    openWindowReletiveToMousePos: false,
-    customColor: '',
-    randomColor: true,
-    activationPolicy: 'regular',
-    openListWhenAppStart: 'true',
-    defaultPage: true
-})
 
 //==Widget Window==
 class Camera {
@@ -164,7 +159,7 @@ class Settings {
             this.settingsPage.webContents.executeJavaScript(`document.getElementById('openWindowReletiveToMousePos').checked = ${settings.getSync('openWindowReletiveToMousePos')}`)
             this.settingsPage.webContents.executeJavaScript(`document.getElementById('randomColor').checked = ${settings.getSync('randomColor')}`)
             this.settingsPage.show()
-            this.settingsPage.webContents.openDevTools()
+                //this.settingsPage.webContents.openDevTools()
         })
 
 
@@ -182,11 +177,6 @@ class Settings {
 
 
 }
-
-
-
-
-
 
 if (process.platform == 'darwin') {
     console.log(`\x1b[32m✔\x1b[0m Platform:  (${process.getSystemVersion()} | ${process.electron} `)
