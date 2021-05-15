@@ -1,5 +1,11 @@
-$(document).on("click", "a", function() {
-    //this == the link that was clicked
-    var href = $(this).attr("href");
-    alert("You're trying to go to " + href);
-});
+document.addEventListener('', () => {
+
+    var handler = function(href) {
+        new WinBox({ title: "Traffic Cam", url: href })
+    }
+    for (var ls = document.links, numLinks = ls.length, i = 0; i < numLinks; i++) {
+        ls[i].onclick = handler(ls[i].href);
+    }
+
+
+})
