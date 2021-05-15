@@ -92,11 +92,12 @@ class Camera {
         this.window.loadURL(this.url)
 
         //Window party trick where the window opens reletive to the mouse position
-        /*
-                var m = screen.getCursorScreenPoint()
-                console.log(m)
-                this.window.setPosition(m.x + 175, m.y / 3)
-        */
+        if (settings.getSync('openWindowReletiveToMousePos')) {
+            var m = screen.getCursorScreenPoint()
+            console.log(m)
+            this.window.setPosition(m.x + 175, m.y / 3)
+
+        }
         this.window.on('close', () => {
             console.log(`\x1b[31m✖︎\x1b[0m Closed ${this.window.webContents.getURL()}`)
         })
@@ -131,8 +132,8 @@ class Camera {
 class Settings {
     constructor() {
         this.settingsPage = new BrowserWindow({
-            height: 700,
-            width: 410,
+            height: 325,
+            width: 710,
             webPreferences: {
                 nodeIntegration: true,
                 enableRemoteModule: true,
