@@ -47,7 +47,7 @@ for (var loop = 0; loop < url.length; loop++) {
             //var data = JSON.parse()
             // get the table to add rows to
         var table = document.getElementById('table');
-        // cycle through the array for each of the presidents
+        // cycle through the array for each of the cameras
         for (var i = 0; i < data.length; ++i) {
 
             var item = data[i]
