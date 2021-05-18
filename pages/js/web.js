@@ -1,11 +1,16 @@
-document.addEventListener('', () => {
+var cameras = document.getElementsByClassName('camera')
 
-    var handler = function(href) {
-        new WinBox({ title: "Traffic Cam", url: href })
-    }
-    for (var ls = document.links, numLinks = ls.length, i = 0; i < numLinks; i++) {
-        ls[i].onclick = handler(ls[i].href);
-    }
+for (let camera in cameras) {
+    console.log(cameras[camera].lastChild)
+    let camLink = cameras[camera].lastChild.href
+    let camTitle = cameras[camera].lastChild.innerText
+        //console.log(camLink)
 
 
-})
+    let win = "new WinBox( \'" + camTitle + "\', { url: '" + camLink + "', width: 310, height: 425});"
+
+
+    //cameras[camera].lastChild.onclick = win
+    //cameras[camera].lastChild.href = '#'
+    cameras[camera].lastChild.outerHTML = "<a href=\"#\" onclick=\"" + win + "\"> " + camTitle + " </a>"
+}
