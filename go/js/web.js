@@ -7,7 +7,7 @@ for (let camera in cameras) {
         //console.log(camLink)
 
 
-    let win = "new WinBox( \'" + camTitle + "\', { url: '" + camLink + "', width: 310, height: 435});"
+    let win = "new WinBox( \'" + camTitle + "\', { url: '" + camLink + "', width: 320, height: 435});"
 
 
     //cameras[camera].lastChild.onclick = win
