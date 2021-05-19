@@ -11,7 +11,7 @@
 </head>
 
 <body>
-Detecting Platform...
+    Detecting Platform...
 </body>
 <script>
     if (isElectron()) {
@@ -22,7 +22,17 @@ Detecting Platform...
         }
 
     } else {
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            if (confirm('This site doesn\'t like mobile devices. You can press "OK" to go back or "Cancel" to proceed')) {
+                window.history.back()
+            } else {
+                window.location.assign(`web/live.html`)
+
+            }
+        } else {
             window.location.assign(`web/live.html`)
+        }
+
     }
 </script>
 

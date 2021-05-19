@@ -186,10 +186,6 @@ if (process.platform == 'darwin') {
 }
 
 app.whenReady().then(() => {
-    globalShortcut.register('CommandOrControl+,', () => {
-        openSettings(app)
-    })
-}).then(() => {
     //Check the install before things go wrong
     checkInstall(app)
     checkInternet(app)
@@ -220,24 +216,24 @@ app.whenReady().then(() => {
     //main.setIcon('assets/icon.png')
     if (process.platform == 'win32') {
         if (settings.getSync('defaultPage')) {
-            main.loadURL(`${host}pages/url/live.html`)
-            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/url/live.html`)
+            main.loadURL(`${host}go/url/live.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}go/url/live.html`)
 
         } else {
-            main.loadURL(`${host}pages/url/snap.html`)
-            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/url/snap.html`)
+            main.loadURL(`${host}go/url/snap.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}go/url/snap.html`)
 
         }
 
     } else {
 
         if (settings.getSync('defaultPage')) {
-            main.loadURL(`${host}pages/uri/live.html`)
-            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/uri/live.html`)
+            main.loadURL(`${host}go/uri/live.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}go/uri/live.html`)
 
         } else {
-            main.loadURL(`${host}pages/uri/snap.html`)
-            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}pages/uri/snap.html`)
+            main.loadURL(`${host}go/uri/snap.html`)
+            console.log(`\x1b[32m✔\x1b[0m Loaded ${host}go/uri/snap.html`)
 
         }
     }
@@ -417,12 +413,12 @@ function devMode(main) {
 
     if (process.platform == 'win32') {
 
-        main.loadFile('../pages/url/live.html')
-        console.log(`\x1b[32m✔\x1b[0m Loaded ..pages/url/live.html`)
+        main.loadFile('../go/url/live.html')
+        console.log(`\x1b[32m✔\x1b[0m Loaded ..go/url/live.html`)
     } else {
         main.loadURL("chrome://dino")
-            //main.loadFile('../pages/uri/live.html')
-            //console.log(`\x1b[32m✔\x1b[0m Loaded ../pages/uri/live.html`)
+            //main.loadFile('../go/uri/live.html')
+            //console.log(`\x1b[32m✔\x1b[0m Loaded ../go/uri/live.html`)
     }
 
 
