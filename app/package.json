@@ -4,7 +4,7 @@
     "description": "Lets you look at many different cameras at once",
     "keywords": [],
     "main": "./main.js",
-    "version": "0.6.5",
+    "version": "0.7.0",
     "author": "child-duckling",
     "scripts": {
         "start": "electron-forge start",
@@ -52,8 +52,7 @@
             "packagerConfig": {
                 "icon": "./assets/icon.png"
             },
-            "makers": [
-                {
+            "makers": [{
                     "name": "@electron-forge/maker-squirrel",
                     "config": {
                         "name": "ca_cams"

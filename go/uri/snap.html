@@ -35,6 +35,16 @@
             align-self: center;
         }
     </style>
+    <script>
+        $(function() {
+            $("#table").tablesorter({
+                sortList: [
+                    [0, 0],
+                    [1, 0]
+                ]
+            });
+        });
+    </script>
 </head>
 <!-- Always shows a header, even in smaller screens. -->
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
