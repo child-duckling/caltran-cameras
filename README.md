@@ -3,7 +3,7 @@
 
 
 
-A simple web app to use with Caltrans' camera network
+A simple web app to see and interact with Caltrans' road camera network
 
 
 
