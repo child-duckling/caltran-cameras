@@ -296,7 +296,7 @@ app.on('open-url', function(event, url) {
                 }
 
             } else {
-                dialog.showErrorBox('Caltrans Cameras', `Invalid Link`)
+                reopen(app)
             }
         } else {
             settings.set({ recoveryLink: `${deeplink}` })
