@@ -23,6 +23,18 @@
             transform: translateX(-50%) translateY(-50%);
         }
     </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V50236WTN0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-V50236WTN0');
+    </script>
 </head>
 
 <body>
@@ -50,7 +62,6 @@
         } else {
             try {
                 document.location = 'cal-cam://'
-
             } catch (e) {
                 document.location = 'web/live.html';
             } finally {
