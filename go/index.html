@@ -43,6 +43,26 @@
         })(window, document, 'script', 'dataLayer', 'GTM-T5VFB9G');
     </script>
     <!-- End Google Tag Manager -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V50236WTN0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-V50236WTN0');
+    </script>
+    <script>
+        window.onload = function() {
+            //<!-- Deep link URL for existing users with app already installed on their device -->
+            window.location = 'cal-cam://';
+            //<!-- Else -->
+            setTimeout("window.location = 'https://caltrancameras.app/go/web/live.html';", 1000);
+        }
+    </script>
 </head>
 
 <body>
@@ -67,17 +87,7 @@
                 window.location.assign(`web/live.html`)
 
             }
-        } else {
-            try {
-                document.location = 'cal-cam://'
-            } catch (e) {
-                document.location = 'web/live.html';
-            } finally {
-                window.history.back();
-
-            }
         }
-    }
 </script>
 
 </html>
