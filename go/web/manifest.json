@@ -1,0 +1,22 @@
+{
+    "dir": "ltr",
+    "lang": "en",
+    "name": "Caltrans Cameras",
+    "short_name": "CaltransCameras",
+    "scope": "/go/web",
+    "display": "standalone",
+    "start_url": "/go/web/live.html",
+    "background_color": "#000000",
+    "theme_color": "transparent",
+    "description": "A simple and easy to use app to see and interact with Caltrans’ road camera network.",
+    "orientation": "any",
+    "related_applications": [],
+    "prefer_related_applications": "false",
+    "icons": [{
+        "src": "/icon.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }],
+    "url": "https://caltranscameras.app/go",
+    "screenshots": []
+}

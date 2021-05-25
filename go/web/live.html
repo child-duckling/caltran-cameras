@@ -50,13 +50,15 @@
     </script>
 
     <!-- PWA -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwainstall"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate"></script>
+    <script type="module" src="./pwainstall.js"></script>
+    <script type="module" src="https://unpkg.com/@pwabuilder/pwaupdate"></script>
 
 
 
 </head>
 <!-- Always shows a header, even in smaller screens. -->
+<pwa-update></pwa-update>
+
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">

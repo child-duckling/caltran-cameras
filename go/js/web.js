@@ -1,7 +1,7 @@
 var cameras = document.getElementsByClassName('camera')
 
 for (let camera in cameras) {
-    console.log(cameras[camera].lastChild)
+    //console.log(cameras[camera].lastChild)
     let camLink = cameras[camera].lastChild.href
     let camTitle = cameras[camera].lastChild.innerText
         //console.log(camLink)

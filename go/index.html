@@ -60,7 +60,7 @@
             //<!-- Deep link URL for existing users with app already installed on their device -->
             window.location = 'cal-cam://';
             //<!-- Else -->
-            setTimeout("window.location = 'https://caltranscameras.app/go/web/live.html';", 3000);
+            setTimeout("window.location.assign(`web/live.html`);", 3000);
         }
     </script>
 </head>
