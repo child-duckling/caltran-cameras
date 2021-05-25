@@ -47,6 +47,13 @@
 
         gtag('config', 'G-V50236WTN0');
     </script>
+
+    <!-- PWA -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwainstall"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate"></script>
+    <link rel="manifest" href="manifest.json"></link>
+
+
 </head>
 <!-- Always shows a header, even in smaller screens. -->
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -74,6 +81,7 @@
                     <div class="mdl-snackbar__text"></div>
                     <button type="button" class="mdl-snackbar__action"></button>
                 </div>
+                <pwa-update></pwa-update>
                 <table id="table" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp mdl-grid mdl-grid--no-spacing mdl-data-table__header--sorted-descending" role="main" style="width:875px" summary="This table charts the CCTV Streaming files available">
                     <thead>
                         <tr>
