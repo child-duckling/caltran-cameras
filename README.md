@@ -25,7 +25,7 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
 <div class="card-square mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title mdl-card--expand" style="color: #fff;
   background:
-    url('/app/assests/icon.icns') bottom right 15% no-repeat #3f52af;}">
+    url('/app/assests/icon.icns') bottom right 15% no-repeat #46B6AC;}">
     <h2 class="mdl-card__title-text">App</h2>
   </div>
   <div class="mdl-card__supporting-text">
@@ -36,7 +36,7 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
       Download
     </a>
   </div>
-</div></div>
+</div>
   <div class="mdl-cell mdl-cell--4-col">
 <div class="card-square mdl-card mdl-shadow--2dp" style="">
   <div class="mdl-card__title mdl-card--expand" style="color: #fff;
@@ -52,7 +52,7 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
       Visit
     </a>
   </div>
-</div></div>
+</div>
 </div>
 
 
