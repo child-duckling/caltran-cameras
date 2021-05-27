@@ -46,7 +46,7 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
   </div>
   <div class="mdl-card__supporting-text">
    A Lightweight Web App with only live cameras
-    <p><sup>Chrome*, Firefox, MS Edge, Opera </p></sup></div>
+    <p><sup>Chrome*, Firefox, MS Edge, Opera </sup></div>
   <div class="mdl-card__actions mdl-card--border">
     <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://caltranscameras.app/go/">
       Visit
