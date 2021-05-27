@@ -60,13 +60,18 @@
             //<!-- Deep link URL for existing users with app already installed on their device -->
             window.location = 'cal-cam://';
             //<!-- Else -->
-            setTimeout("window.location.assign(`web/live.html`);", 3000);
+            setTimeout("window.location.assign(`web/app.html`);", 3000);
         }
     </script>
 </head>
 
 <body>
-    <div class="main">Detecting Platform...
+    <div class="main" style="position: absolute;
+            top: 50%;
+            left: 50%;
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);">Detecting Platform...
         <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
     </div>
 
@@ -84,7 +89,7 @@
             if (confirm('This site doesn\'t like mobile devices. You can press "OK" to go back or "Cancel" to proceed')) {
                 window.history.back()
             } else {
-                window.location.assign(`web/live.html`)
+                window.location.assign(`web/app.html`)
 
             }
         }

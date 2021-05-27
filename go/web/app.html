@@ -53,30 +53,35 @@
     <script type="module" src="./pwainstall.js"></script>
     <script type="module" src="https://unpkg.com/@pwabuilder/pwaupdate"></script>
 
-
+    <!-- Load -->
+    <script>
+        setTimeout("document.getElementById('load').style = 'display: none'; document.getElementById('main').style = ''", 2500)
+    </script>
 
 </head>
-<!-- Always shows a header, even in smaller screens. -->
+<!-- PWA -->
 <pwa-update></pwa-update>
-
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+<!-- Stuff -->
+<div id="load" style="position: absolute;
+            top: 50%;
+            left: 50%;
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);">Loading Cameras...
+    <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+</div>
+<div id="main" class="mdl-layout mdl-js-layout mdl-layout--fixed-header" style="display: none;">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <span class="mdl-layout-title">Live Caltrans Cameras</span>
+            <span class="mdl-layout-title">Caltrans Cameras</span>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
-            <nav class="mdl-navigation">
-                <a class='mdl-navigation__link' href="./snap.html">Snapshot Cameras</a>
-            </nav>
+            <a href="https://github.com/child-duckling/caltran-cameras" class="mdl-navigation__link mdl-navigation__link--icon github"><i class="material-icons">link</i><span>GitHub</span></a>
+            <pwa-install></pwa-install>
         </div>
     </header>
-    <div class="mdl-layout__drawer">
-        <nav class="mdl-navigation">
-            <a href="https://github.com/child-duckling/caltran-cameras" class="mdl-navigation__link mdl-navigation__link--icon github"><i class="material-icons">link</i><span>GitHub</span></a>
-        </nav>
-    </div>
     <main class="mdl-layout__content">
         <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
             <div class="page-content mdl-layout">
@@ -5644,8 +5649,6 @@
             </div>
     </main>
 </div>
-
-<p><br>Updated at: 00:01:41 on 2021-03-04</p>
 </body>
 <script>
     $(function() {

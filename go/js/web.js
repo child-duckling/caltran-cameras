@@ -1,5 +1,15 @@
-var cameras = document.getElementsByClassName('camera')
+function loaded() {
 
+    document.getElementById('load').style = 'display: none'
+    document.getElementById('main').style = ''
+
+
+
+}
+
+
+
+var cameras = document.getElementsByClassName('camera')
 for (let camera in cameras) {
     //console.log(cameras[camera].lastChild)
     let camLink = cameras[camera].lastChild.href
@@ -7,7 +17,7 @@ for (let camera in cameras) {
         //console.log(camLink)
 
 
-    let win = "new WinBox( \'" + camTitle + "\', { url: '" + camLink + "', width: 330, height: 435});"
+    let win = "new WinBox( \'" + camTitle + "\', { url: '" + camLink + "', width: 330, height: 435, background: '#3f52af'});"
 
 
     //cameras[camera].lastChild.onclick = win
