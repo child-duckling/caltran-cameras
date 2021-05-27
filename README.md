@@ -37,13 +37,13 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
     </a>
   </div>
 </div>
-  <div class="mdl-cell mdl-cell--4-col">
-<div class="card-square mdl-card mdl-shadow--2dp" style="">
-  <div class="mdl-card__title mdl-card--expand" style="color: #fff;
+<div class="mdl-cell mdl-cell--4-col">
+  <div class="card-square mdl-card mdl-shadow--2dp" style="">
+    <div class="mdl-card__title mdl-card--expand" style="color: #fff;
   background:
     url('/go/favicon.ico') bottom right 15% no-repeat #3f52af;}">
     <h2 class="mdl-card__title-text">PWA</h2>
-  </div>
+    </div>
   <div class="mdl-card__supporting-text">
    A Lightweight Web App with only live cameras
     <p><sup>Chrome*, Firefox, MS Edge, Opera </sup></div>
