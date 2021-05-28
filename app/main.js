@@ -228,37 +228,15 @@ app.whenReady().then(() => {
     } else {
 
         if (settings.getSync('defaultPage')) {
-            main.loadURL(`${host}go/uri/live.html`)
+            main.loadURL(`${host}go`)
             console.log(`\x1b[32m✔\x1b[0m Loaded ${host}go/uri/live.html`)
 
         } else {
-            main.loadURL(`${host}go/uri/snap.html`)
+            main.loadURL(`${host}go`)
             console.log(`\x1b[32m✔\x1b[0m Loaded ${host}go/uri/snap.html`)
 
         }
     }
-
-
-
-    main.webContents.on('did-fail-load', () => {
-
-        if (app.isPackaged == false) {
-            devMode(main)
-
-        } else {
-            console.log(`\x1b[31m✖︎\x1b[0m No Internet Connection`)
-            online = false
-            dialog.showErrorBox('Caltrans Cameras', 'No Internet Connection')
-            app.quit()
-
-
-
-
-
-        }
-
-
-    });
 
     if (settings.get('recoveryLink').length >= 5) {
         shell.openExternal(String(settings.get('recoveryLink')))
@@ -382,7 +360,7 @@ function checkInternet() {
     const config = {
         timeout: 5000, //timeout connecting to each try (default 5000)
         retries: 3, //number of retries to do before failing (default 5)
-        domain: 'duckling.pw' //the domain to check DNS record of
+        domain: host //the domain to check DNS record of
     }
     let online
     checkInternetConnected(config)
@@ -392,6 +370,8 @@ function checkInternet() {
         }).catch((err) => {
             console.log(`\x1b[31m✖︎\x1b[0m No Network Detected`)
             online = false
+            dialog.showErrorBox('Caltrans Cameras', 'No Internet Connection')
+                //app.quit()
                 //app.quit()
                 //dialog.showErrorBox('Caltrans Cameras', 'No Network Detected')
         });
