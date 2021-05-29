@@ -62,16 +62,3 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
     </a>
   </div>
 </div>
-
-
-###### *Only Installable on Chromium-based Browsers
-
-
-
-## Credits
-
-- [https://cwwp2.dot.ca.gov/](https://cwwp2.dot.ca.gov/)
-- [https://cwwp2.dot.ca.gov/documentation/cctv/cctv.htm](https://cwwp2.dot.ca.gov/documentation/cctv/cctv.htm)
-- [https://cwwp2.dot.ca.gov/tools/js/cctv.js](https://cwwp2.dot.ca.gov/tools/js/cctv.js)
-- [https://cwwp2.dot.ca.gov/vm/streamlist.htm](https://cwwp2.dot.ca.gov/vm/streamlist.htm)
-- Camera icon made by [Freepik](https://www.freepik.com) from [Flaticon](www.flaticon.com)
