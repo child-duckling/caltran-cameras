@@ -9,13 +9,7 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
 
 # Getting Started
 
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "6vi2prgnxj");
-</script>
+
 
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -42,7 +36,7 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
 <div class="card-square mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title mdl-card--expand" style="color: #fff;
   background:
-    url('/app/assests/icon.icns') bottom right 15% no-repeat #46B6AC;}">
+    url('/icon-192.png') bottom right 15% no-repeat #00baeb;}">
     <h2 class="mdl-card__title-text">App</h2>
   </div>
   <div class="mdl-card__supporting-text">
@@ -53,28 +47,27 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
       Download
     </a>
   </div>
-</div>
-<div class="mdl-cell mdl-cell--4-col">
-  <div class="card-square mdl-card mdl-shadow--2dp" style="">
-    <div class="mdl-card__title mdl-card--expand" style="color: #fff;
+</div></div>
+  <div class="mdl-cell mdl-cell--4-col">
+<div class="card-square mdl-card mdl-shadow--2dp" style="">
+  <div class="mdl-card__title mdl-card--expand" style="color: #fff;
   background:
-    url('/go/favicon.ico') bottom right 15% no-repeat #3f52af;}">
+    url('/go/favicon.ico') bottom right 15% no-repeat #fa8a19;}">
     <h2 class="mdl-card__title-text">PWA</h2>
-    </div>
+  </div>
   <div class="mdl-card__supporting-text">
    A Lightweight Web App with only live cameras
-    <p><sup>Chrome*, Firefox, MS Edge, Opera </sup></div>
+    <p><sup>Chrome*, Firefox, MS Edge, Opera </p></sup></div>
   <div class="mdl-card__actions mdl-card--border">
     <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://caltranscameras.app/go/">
       Visit
     </a>
   </div>
-</div>
+</div></div>
 </div>
 
 
 ###### *Only Installable on Chromium-based Browsers
-
 
 
 
