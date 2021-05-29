@@ -32,38 +32,35 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
 }
 </style>
 <div class="mdl-grid">
-  <div class="mdl-cell mdl-cell--7-col">
-<div class="card-square mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title mdl-card--expand" style="color: #fff;
-  background:
-    url('/icon-192.png') bottom right 15% no-repeat #00baeb;}">
-    <h2 class="mdl-card__title-text">App</h2>
-  </div>
-  <div class="mdl-card__supporting-text">
-    A special app with more display options and even snapshot cameras!
-    <p><sup>macOS, Windows, and Linux </sup></p>  </div>
-  <div class="mdl-card__actions mdl-card--border">
-    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://github.com/child-duckling/caltran-cameras/releases/latest">
-      Download
-    </a>
-  </div>
-</div></div>
-  <div class="mdl-cell mdl-cell--7-col">
-<div class="card-square mdl-card mdl-shadow--2dp" style="">
-  <div class="mdl-card__title mdl-card--expand" style="color: #fff;
-  background:
-    url('/go/favicon.ico') bottom right 15% no-repeat #fa8a19;}">
+  <div class="mdl-cell mdl-cell--5-col">
+        <div class="card-square mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title mdl-card--expand" style="color: #fff; background: url('/icon-192.png') bottom right 15% no-repeat #00baeb;}">
+        <h2 class="mdl-card__title-text">App</h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+            A special app with more display options and even snapshot cameras!
+        <p><sup>macOS, Windows, and Linux </sup></p>  
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://github.com/child-duckling/caltran-cameras/releases/latest">
+            Download
+            </a>
+        </div>
+    </div>
+  <div class="mdl-cell mdl-cell--5-col">
+    <div class="card-square mdl-card mdl-shadow--2dp" style="">
+        <div class="mdl-card__title mdl-card--expand" style="color: #fff; background: url('/go/favicon.ico') bottom right 15% no-repeat #fa8a19;}">
     <h2 class="mdl-card__title-text">PWA</h2>
-  </div>
-  <div class="mdl-card__supporting-text">
-   A Lightweight Web App with only live cameras
-    <p><sup>Chrome*, Firefox, MS Edge, Opera </p></sup></div>
-  <div class="mdl-card__actions mdl-card--border">
+    </div>
+    <div class="mdl-card__supporting-text">
+        A Lightweight Web App with only live cameras
+        <p><sup>Chrome*, Firefox, MS Edge, Opera </p></sup>
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
     <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://caltranscameras.app/go/">
       Visit
     </a>
   </div>
-</div></div>
 </div>
 
 
