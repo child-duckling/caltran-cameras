@@ -59,3 +59,4 @@ A simple and easy to use App to see and interact with Caltrans' road camera netw
     <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="https://caltranscameras.app/go/">
       Visit
     </a>
+</div>
