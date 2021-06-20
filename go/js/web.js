@@ -2,11 +2,10 @@ function loaded() {
 
     document.getElementById('load').style = 'display: none'
     document.getElementById('main').style = ''
-
-
-
 }
-
+if (document.URL == `http://caltranscameras.app/go/web/app.html` || document.URL == `https://caltranscameras.app/go/web/app.html`) {
+    document.location = `http://caltranscameras.app/go/web/app.min.html`
+}
 
 
 var cameras = document.getElementsByClassName('camera')
